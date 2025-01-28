@@ -5,55 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Активация промокода</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            text-align: center;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            width: 80%;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #218838;
-        }
-
-        .result {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #333;
-        }
+        /* Стили остаются без изменений */
     </style>
 </head>
 <body>
@@ -67,18 +19,34 @@
     </div>
 
     <script>
-        function activatePromoCode(event) {
+        async function activatePromoCode(event) {
             event.preventDefault(); // предотвращаем отправку формы
 
             const promoCode = document.getElementById('promoCode').value;
             const resultDiv = document.getElementById('result');
+            
+            // Получаем ID пользователя из параметров URL (например, передаем из бота)
+            const userId = /* Получите ID пользователя из URL или другой логики */;
+            
+            // Отправляем команду боту
+            const botToken = "8063347696:AAHzOBTt8E4Msnys8vLvSETKrw7z6PDwvw4"; // Укажите токен вашего бота
 
-            // Проверяем введённый промокод
-            if (promoCode === 'girl11') {
-                resultDiv.innerHTML = 'Промокод активирован! Вы получили 2 монеты.';
-                // Здесь можно добавить код для взаимодействия с ботом, если это возможно
+            const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: userId,
+                    text: `/activate_promo ${promoCode}` // Отправляем команду боту с промокодом
+                })
+            });
+
+            const responseData = await response.json();
+            if (responseData.ok) {
+                resultDiv.innerHTML = 'Запрос на активацию промокода отправлен!';
             } else {
-                resultDiv.innerHTML = 'Неверный промокод.';
+                resultDiv.innerHTML = 'Ошибка при отправке запроса.';
             }
 
             // Очищаем поле ввода
