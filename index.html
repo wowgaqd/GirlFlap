@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Активация промокода</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Активация промокода</h1>
+        <form onsubmit="return activatePromoCode(event)">
+            <input type="text" id="promoCode" placeholder="Введите промокод" required />
+            <button type="submit">Активировать</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function activatePromoCode(event) {
+            event.preventDefault(); // предотвращаем отправку формы
+
+            const promoCode = document.getElementById('promoCode').value;
+            const resultDiv = document.getElementById('result');
+
+            // Проверяем введённый промокод
+            if (promoCode === 'girl11') {
+                resultDiv.innerHTML = 'Промокод активирован! Вы получили 2 монеты.';
+            } else {
+                resultDiv.innerHTML = 'Неверный промокод.';
+            }
+
+            // Очищаем поле ввода
+            document.getElementById('promoCode').value = '';
+        }
+    </script>
+</body>
+</html>
