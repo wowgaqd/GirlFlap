@@ -59,7 +59,7 @@
 <body>
     <div class="container">
         <h1>Активация промокода</h1>
-        <form onsubmit="return activatePromoCode(event)">
+        <form id="promoForm" onsubmit="return activatePromoCode(event)">
             <input type="text" id="promoCode" placeholder="Введите промокод" required />
             <button type="submit">Активировать</button>
         </form>
@@ -76,6 +76,7 @@
             // Проверяем введённый промокод
             if (promoCode === 'girl11') {
                 resultDiv.innerHTML = 'Промокод активирован! Вы получили 2 монеты.';
+                // Здесь можно добавить код для взаимодействия с ботом, если это возможно
             } else {
                 resultDiv.innerHTML = 'Неверный промокод.';
             }
