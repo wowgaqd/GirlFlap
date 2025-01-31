@@ -17,15 +17,15 @@
             align-items: center;
             min-height: 100vh;
             font-size: 95%;
-            overflow: hidden;
-            position: relative;
+            overflow: hidden; /* Запрет на прокрутку страницы */
+            position: relative; /* Устанавливаем позицию для управления анимацией */
         }
 
         .header {
             width: 100%;
             display: flex;
-            justify-content: center;
-            padding: 10px 0;
+            justify-content: center; /* Центрирование заголовка */
+            padding: 10px 0; /* Увеличенный отступ */
             background-color: #121212;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
@@ -39,25 +39,139 @@
         }
 
         .chat-container {
-            background-color: rgba(30, 30, 30, 0.9);
+            background-color: rgba(30, 30, 30, 0.9); /* Сделал более темным */
             border-radius: 7.6px;
             box-shadow: 0 1.9px 9.5px rgba(0, 0, 0, 0.5);
             padding: 19px;
-            width: 70%;
-            height: 400px;
-            overflow-y: auto;
+            width: 70%; /* Увеличиваем ширину до 70% */
+            height: 400px; /* Уменьшил высоту */
+            overflow-y: auto; /* Включаем прокрутку только для чата */
             margin: 19px auto;
             display: flex;
             flex-direction: column;
             position: relative;
         }
 
-        /* Стили и другие классы остаются прежними */
+        .chat-container::-webkit-scrollbar {
+            width: 12px; /* Ширина полоски прокрутки */
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 10px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #777; /* Цвет полоски при наведении */
+        }
+
+        .message {
+            background-color: #444;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1.9px 4.8px rgba(0, 0, 0, 0.3);
+            word-wrap: break-word;
+            transition: 0.3s;
+        }
+
+        .message:hover {
+            background-color: #555;
+        }
+
+        .message b {
+            color: #e0e0e0;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-style: italic; /* Установка стиля курсив */
+        }
+
+        .message .player-tag {
+            background: metallic; /* Улучшаем отображение тега */
+            color: black;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.6em;
+            margin-left: 5px;
+            display: inline-block;
+            text-align: center;
+            opacity: 0.85;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .message span {
+            font-size: 0.8em;
+            color: #888;
+            display: block;
+            margin-top: 3px;
+        }
+
+        .message p {
+            margin: 0;
+            font-size: 1em;
+            color: #ccc;
+        }
 
         .input-container {
-            position: absolute;
-            bottom: 15px;
-            transition: transform 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            width: 70%; /* Увеличиваем ширину до 70% */
+            max-width: 500px; /* Увеличиваем максимальную ширину */
+            margin: 0 auto;
+            position: absolute; /* Относительно родителя */
+            bottom: 15px; /* Отступ снизу */
+            transition: transform 0.3s ease-in-out; /* Плавный переход */
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px; /* Увеличил внутренние отступы */
+            font-size: 16px; /* Увеличил размер шрифта */
+            border: 1px solid #555;
+            border-radius: 25px; /* Скругление */
+            background: linear-gradient(135deg, #444444, #333333); /* Градиент */
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            transition: border 0.3s; /* Плавный переход для границы */
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border: 1px solid #007bff; /* Цвет рамки при фокусе */
+        }
+
+        button {
+            width: 100%;
+            padding: 12px; /* Увеличил размер кнопки */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 25px; /* Скругление */
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            font-size: 16px; /* Увеличил размер шрифта кнопки */
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red; /* Цвет текста ошибки */
+            font-size: 14px; /* Размер текста для ошибки */
+            margin-top: -5px; /* Поднимаем текст ошибки */
+            margin-bottom: 10px; /* Отступ снизу */
+            visibility: hidden; /* Скрываем сообщение по умолчанию */
+            text-align: center; /* Центровать текст ошибки */
+        }
+
+        /* Скрываем клавиатуру при нажатии на пустое место */
+        body:focus {
+            outline: none;
         }
 
         /* Подъем поля ввода и чат */
@@ -97,7 +211,6 @@
         const socket = new WebSocket('ws://your-websocket-url'); // Укажите ваш адрес веб-сокета
 
         socket.onmessage = function (event) {
-            // Обработка новых сообщений
             const newMessage = JSON.parse(event.data);
             messages.push(newMessage);
             displayMessages();
@@ -132,7 +245,7 @@
 
         function displayMessages() {
             const messagesContainer = document.getElementById('chat-container');
-            messagesContainer.innerHTML = '';
+            messagesContainer.innerHTML = ''; // Очистить контейнер перед обновлением
 
             messages.forEach(message => {
                 const messageElement = document.createElement('div');
@@ -150,7 +263,7 @@
 
         function bringUpInput() {
             const inputContainer = document.getElementById('input-container');
-            inputContainer.classList.add('active');
+            inputContainer.classList.add('active'); // Добавляем класс для анимации
         }
 
         window.addEventListener('click', function (e) {
@@ -158,13 +271,13 @@
             const messageInput = document.getElementById('message-input');
 
             if (!inputContainer.contains(e.target) && messageInput !== e.target) {
-                messageInput.blur();
-                inputContainer.classList.remove('active');
+                messageInput.blur(); // Закрываем клавиатуру
+                inputContainer.classList.remove('active'); // Сбрасываем анимацию
             }
         });
 
         window.onload = () => {
-            fetchMessages();
+            // Сначала можно загрузить сообщения, если они есть на сервере или в локальном хранилище
         };
     </script>
 </body>
