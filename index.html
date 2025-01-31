@@ -1,303 +1,354 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-    <title>GirlChat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GirlFlap</title>
     <style>
-        /* Основные стили */
         body {
-            font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, #282828, #121212);
-            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            font-size: 95%;
-            overflow: hidden;
-            position: relative;
+            background-color: #121212;
+            color: #ffffff;
+            overflow-y: scroll;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
-        .header {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 20px; /* Увеличенный отступ */
-            background-color: #121212;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Стили кастомной полосы прокрутки */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff4081;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff007f;
+        }
+
+        header {
+            background: linear-gradient(to right, #ff4081, #ffab40);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        header img {
+            max-width: 120px;
+            filter: brightness(0) invert(1); /* Применяем фильтр для белого логотипа */
         }
 
         h1 {
-            color: #fff;
+            font-size: 2em;
             font-weight: 700;
-            font-size: 24px;
-            margin: 0;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2);
+            margin: 10px 0;
         }
 
-        .chat-container {
-            background-color: rgba(30, 30, 30, 0.9);
-            border-radius: 7.6px;
-            box-shadow: 0 1.9px 9.5px rgba(0, 0, 0, 0.5);
-            padding: 19px;
-            width: 70%;
-            height: 400px;
-            overflow-y: auto;
-            margin: 19px auto;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+        .top-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            justify-items: center;
+            margin: 20px;
         }
 
-        .message {
-            background-color: #444;
+        .top-button img {
+            width: 100px;
+            height: auto;
             border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 10px;
-            box-shadow: 0 1.9px 4.8px rgba(0, 0, 0, 0.3);
-            word-wrap: break-word;
-            transition: 0.3s;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .message:hover {
-            background-color: #555;
+        .top-button img:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
         }
 
-        .message b {
-            color: #e0e0e0;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            font-style: italic;
-        }
-
-        .message .player-tag {
-            background: metallic;
-            color: black;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-size: 0.6em;
-            margin-left: 5px;
-            display: inline-block;
-            text-align: center;
-            opacity: 0.85;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-        }
-
-        .input-container {
-            display: flex;
-            flex-direction: column;
-            width: 70%;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #555;
-            border-radius: 25px;
-            background: linear-gradient(135deg, #444444, #333333);
-            color: #e0e0e0;
-            margin-bottom: 10px;
-            transition: border 0.3s;
-        }
-
-        button {
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            text-align: center;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .modal {
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(0, 0, 0, 0.8); 
-            justify-content: center; 
-            align-items: center; 
-        }
-
-        .modal-content {
-            background-color: #222;
+        .bot-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
             padding: 20px;
-            border-radius: 10px;
-            width: 300px;
+            margin-bottom: 100px;
+        }
+
+        .bot-card {
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
             text-align: center;
-            position: relative;
+            background-image: linear-gradient(rgba(30, 30, 30, 0.8), rgba(30, 30, 30, 0.8)), url('path/to/texture.png');
+            background-size: cover;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .close {
+        .bot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 38px rgba(0, 0, 0, 0.9);
+        }
+
+        .bot-card img {
+            width: 100%;
+            border-radius: 10px;
+            max-height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .bot-card img:hover {
+            transform: scale(1.05);
+        }
+
+        .bot-card h3 {
+            margin: 10px 0;
+            font-size: 1.5em;
+            color: #ff4081;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+            background-color: rgba(255, 255, 255, 0.1); /* Полупрозрачный фон */
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Уникальные градиенты для каждой кнопки */
+        .btn.original { background: linear-gradient(45deg, #ff007f, #00ff7f); }
+        .btn.fire    { background: linear-gradient(45deg, #ff3300, #ffcc00); }
+        .btn.water   { background: linear-gradient(45deg, #0000ff, #8a2be2); }
+        .btn.ice     { background: linear-gradient(45deg, #ffffff, #00bfff); }
+        .btn.kiwi    { background: linear-gradient(45deg, #a8e063, #76c7d0); }
+        .btn.sand    { background: linear-gradient(45deg, #003366, #ff6600); }
+        .btn.japan   { background: linear-gradient(45deg, #ffffff, #ff0000); }
+        .btn.lollipop { background: linear-gradient(45deg, #ff007f, #00ff7f); }
+        .btn.tyler   { background: linear-gradient(45deg, #ffffff, #000000); }
+        .btn.paradice { background: linear-gradient(45deg, #00ff00, #ffffff); }
+        .btn.shop    { background: linear-gradient(45deg, #f39c12, #e74c3c); }
+
+        /* Снежинки */
+        .snowflake {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            color: #fff;
+            top: -10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            opacity: 0;
+            animation: fall linear infinite;
         }
 
-        .error-message {
-            color: red; 
-            font-size: 14px; 
-            margin-top: -5px; 
-            margin-bottom: 10px; 
-            visibility: hidden; 
-            text-align: center; 
+        @keyframes fall {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Разные размеры и задержки для снежинок */
+        .snowflake:nth-child(1) { width: 5px; height: 5px; left: 10%; animation-duration: 5s; animation-delay: 0s; }
+        .snowflake:nth-child(2) { width: 8px; height: 8px; left: 30%; animation-duration: 7s; animation-delay: 1.5s; }
+        .snowflake:nth-child(3) { width: 6px; height: 6px; left: 50%; animation-duration: 4s; animation-delay: 2.5s; }
+        .snowflake:nth-child(4) { width: 7px; height: 7px; left: 70%; animation-duration: 6s; animation-delay: 1s; }
+        .snowflake:nth-child(5) { width: 4px; height: 4px; left: 80%; animation-duration: 8s; animation-delay: 3s; }
+        .snowflake:nth-child(6) { width: 5px; height: 5px; left: 20%; animation-duration: 5s; animation-delay: 0.5s; }
+        .snowflake:nth-child(7) { width: 8px; height: 8px; left: 40%; animation-duration: 7s; animation-delay: 1.7s; }
+        .snowflake:nth-child(8) { width: 6px; height: 6px; left: 60%; animation-duration: 4s; animation-delay: 2.3s; }
+        .snowflake:nth-child(9) { width: 7px; height: 7px; left: 80%; animation-duration: 6s; animation-delay: 1.2s; }
+        .snowflake:nth-child(10) { width: 4px; height: 4px; left: 90%; animation-duration: 8s; animation-delay: 3.5s; }
+
+        /* Адаптация для мобильных устройств */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.5em; }
+            .top-buttons { grid-template-columns: repeat(2, 1fr); }
+            .bot-card h3 { font-size: 1.2em; }
+            .btn { font-size: 0.9em; }
+            .top-button img {
+                width: 80px; /* Уменьшаем размер изображений на мобильных устройствах */
+            }
+        }
+        
+        /* Прогрузка страницы */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0.8;
+        }
+
+        .loader div {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ff4081;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-
 <body>
-    <div class="header">
-        <h1>GirlChat</h1>
-        <button id="login-button">Login</button>
+
+<div class="loader">
+    <div></div>
+</div>
+
+<header class="fade-in">
+    <img src="images/logo.png" alt="Logo">
+    <h1>Добро пожаловать в GirlFlap!</h1>
+</header>
+
+<div class="top-buttons">
+    <a href="profile" class="top-button fade-in">
+        <img src="images/myprofile.png" alt="Профиль">
+    </a>
+    <a href="captok_genre" class="top-button fade-in">
+        <img src="images/captok.png" alt="Капток">
+    </a>
+    <a href="https://t.me/capture_managerbot?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="top-button fade-in">
+        <img src="images/mbot.png" alt="Менеджер">
+    </a>
+    <a href="chat" class="top-button fade-in">
+        <img src="images/chat.png" alt="Чат">
+    </a>
+    <a href="http://t.me/CAPTURESUPPBOT" class="top-button fade-in">
+        <img src="images/TS.png" alt="TS">
+    </a>
+    <a href="shop" class="top-button fade-in">
+        <img src="images/shop.png" alt="Shop">
+    </a>
+</div>
+
+<div class="snowflakes" aria-hidden="true">
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+</div>
+
+<section class="bot-container">
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_da52e767caa1262272370ddaa70901ff_678582a26a0f7.jpg" alt="Original 🏆">
+        <h3>Original 🏆</h3>
+        <a href="https://t.me/CAPTURENETBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn original">Перейти</a>
     </div>
-
-    <div class="chat-container" id="chat-container"></div>
-
-    <div class="input-container" id="input-container">
-        <div class="error-message" id="error-message">Сообщение можно отправлять раз в 10 секунд</div>
-        <form id="chat-form" onsubmit="sendMessage(event)">
-            <input type="text" name="message" placeholder="Введите сообщение..." required id="message-input" onfocus="bringUpInput()">
-            <button type="submit">Отправить</button>
-        </form>
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_bc40f60ac4efd51f9e3ea11377a48aef_678582a25bb41.jpg" alt="Fire 🔥">
+        <h3>Fire 🔥</h3>
+        <a href="https://t.me/CAPTURENETFIREBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn fire">Перейти</a>
     </div>
-
-    <div class="modal" id="login-modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Вход</h2>
-            <input type="text" id="username" placeholder="Имя пользователя" required>
-            <input type="password" id="password" placeholder="Пароль" required>
-            <button id="login-submit" onclick="login()">Войти</button>
-            <div class="error-message" id="modal-error-message">Неверные учетные данные</div>
-        </div>
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_3b2e1884c7560b2867057608992085d0_678582a279f5d.jpg" alt="Water 💦">
+        <h3>Water 💦</h3>
+        <a href="https://t.me/CAPTURENETWATERBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn water">Перейти</a>
     </div>
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_e8627dc635e67f087d55c5864d9d728a_678582a25ea0e.jpg" alt="Ice 🧊">
+        <h3>Ice 🧊</h3>
+        <a href="https://t.me/CAPTURENETICEBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn ice">Перейти</a>
+    </div>
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_708367c59be2320c53210fb922ec39f3_678582a264409.jpg" alt="Kiwi 🥝">
+        <h3>Kiwi 🥝</h3>
+        <a href="https://t.me/CAPTURENETKIWIBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn kiwi">Перейти</a>
+    </div>
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_4451239be57bc343aa44996078596458_678582a274a22.jpg" alt="Sand ⌛">
+        <h3>Sand ⌛</h3>
+        <a href="https://t.me/CAPTURENETSANDBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn sand">Перейти</a>
+    </div>
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_58c960283f66e394a417d4543f9f25c9_678582a2614dd.jpg" alt="Japan 🇯🇵">
+        <h3>Japan 🇯🇵</h3>
+        <a href="https://t.me/CAPTURENETJAPANBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn japan">Перейти</a>
+    </div>
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_57e565f2a143f0e4bcae98ee4bee8710_678582a267483.jpg" alt="Lolipop 🍭">
+        <h3>Lolipop 🍭</h3>
+        <a href="https://t.me/CAPTURENETLOLIPOPBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn lollipop">ЗАБАНЕН</a>
+    </div>
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_9fa758c108cd8272b207e59180e50b0d_678582a27764e.jpg" alt="Tyler 🥼">
+        <h3>Tyler 🥼</h3>
+        <a href="https://t.me/CAPTURENETTYLERBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn tyler">Перейти</a>
+    </div>
+    <div class="bot-card fade-in">
+        <img src="images/remove_image_metadata_ba48fea6a0e332db768718d0f4654483_678582a26de66.jpg" alt="Paradice 🌌">
+        <h3>Paradise 🌌</h3>
+        <a href="https://t.me/CAPTURENETPARADISEBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn paradice">Перейти</a>
+    </div>
+</section>
 
-    <script>
-        window.addEventListener('touchmove', function (e) {
-            e.preventDefault();
-        }, { passive: false });
-
-        let messages = [];
-        let username = localStorage.getItem('username') || '';
-        const chatContainer = document.getElementById('chat-container');
-        const loginModal = document.getElementById('login-modal');
-
-        async function fetchMessages() {
-            const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
-            const data = await response.json();
-            messages = data.map(message => ({
-                user_id: message.userId,
-                text: message.body,
-                time: new Date().toLocaleString()
-            }));
-            displayMessages();
-        }
-
-        function displayMessages() {
-            chatContainer.innerHTML = '';
-            messages.forEach(message => {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message');
-                const userTag = message.user_id === '@GirlFlap' ? 'Администратор' : username;
-                messageElement.innerHTML = `
-                    <b class="user">${userTag}<span class="player-tag">${message.user_id === '@GirlFlap' ? 'Администратор' : 'игрок'}</span></b>
-                    <p>${message.text}</p>
-                    <span>${message.time}</span>
-                `;
-                chatContainer.appendChild(messageElement);
+<script>
+    window.onload = function() {
+        const loader = document.querySelector('.loader');
+        loader.style.display = 'none';
+        
+        const fadeIns = document.querySelectorAll('.fade-in');
+        fadeIns.forEach((el) => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
             });
-            chatContainer.scrollTop = chatContainer.scrollHeight; // Автоматическая прокрутка вниз
-        }
+            observer.observe(el);
+        });
+    };
+</script>
 
-        function sendMessage(event) {
-            event.preventDefault();
-            const messageInput = document.getElementById('message-input');
-            const messageText = messageInput.value.trim();
-            const currentTime = new Date().getTime();
-            const errorMessage = document.getElementById('error-message');
-
-            if (messageText) {
-                // Проверка на нажатие в нужный тайминг
-                if (currentTime - lastSendTime >= sendCooldown) {
-                    // Добавляем новое сообщение
-                    const newMessage = {
-                        user_id: username || 'гость',
-                        text: messageText,
-                        time: new Date().toLocaleString()
-                    };
-
-                    messages.push(newMessage);
-                    displayMessages(); 
-                    messageInput.value = ''; 
-                    lastSendTime = currentTime;
-                    errorMessage.style.visibility = 'hidden';
-                    messageInput.style.border = '';
-                } else {
-                    errorMessage.style.visibility = 'visible';
-                    messageInput.style.border = '1px solid red';
-                }
-            }
-        }
-
-        document.getElementById('login-button').onclick = function() {
-            loginModal.style.display = 'flex'; // Показываем модальное окно
-        };
-
-        function closeModal() {
-            loginModal.style.display = 'none'; // Закрываем модальное окно
-        }
-
-        function login() {
-            const usernameInput = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
-            const modalErrorMessage = document.getElementById('modal-error-message');
-
-            // Проверка на админа
-            if (usernameInput === '@GirlFlap' && passwordInput === 'ADMIN-5R3BniaWDoYpRKc5JyPjGirlFlap') {
-                username = usernameInput;
-                localStorage.setItem('username', username);
-                closeModal();
-                fetchMessages(); // Загружаем сообщения
-                return;
-            }
-
-            // Проверка на обычного пользователя (например, временный)
-            if (usernameInput && passwordInput) {
-                username = usernameInput;
-                localStorage.setItem('username', username);
-                closeModal();
-                fetchMessages(); // Загружаем сообщения
-                return;
-            }
-
-            modalErrorMessage.style.visibility = 'visible'; // Показываем сообщение об ошибке
-        }
-
-        window.onload = () => {
-            fetchMessages(); // Загрузка сообщений при загрузке страницы
-        };
-    </script>
 </body>
-
 </html>
