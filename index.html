@@ -19,6 +19,7 @@
             min-height: 100vh;
             font-size: 95%;
             overflow: hidden; /* Запрет на прокрутку страницы */
+            position: relative; /* Устанавливаем позицию для управления анимацией */
         }
 
         .header {
@@ -35,6 +36,7 @@
             font-weight: 700;
             font-size: 24px;
             margin: 0;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2);
         }
 
         .chat-container {
@@ -85,10 +87,11 @@
             font-weight: 600;
             display: flex;
             align-items: center;
+            font-style: italic; /* Установка стиля курсив */
         }
 
         .message .player-tag {
-            background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+            background: metallic; /* Улучшаем отображение тега */
             color: black;
             padding: 2px 4px;
             border-radius: 3px;
@@ -169,6 +172,18 @@
         body:focus {
             outline: none;
         }
+
+        /* Стили для поднятия поля ввода и чата */
+        .input-container {
+            position: absolute; /* Относительно родителя */
+            bottom: 15px; /* Отступ снизу */
+            transition: transform 0.3s ease-in-out; /* Плавный переход */
+        }
+
+        /* Поднимаем поле ввода и чат */
+        .input-container.active {
+            transform: translateY(-250px);
+        }
     </style>
 </head>
 
@@ -179,10 +194,10 @@
 
     <div class="chat-container" id="chat-container"></div>
 
-    <div class="input-container">
+    <div class="input-container" id="input-container">
         <div class="error-message" id="error-message">Сообщение можно отправлять раз в 10 секунд</div>
         <form id="chat-form" onsubmit="sendMessage(event)">
-            <input type="text" name="message" placeholder="Введите сообщение..." required id="message-input">
+            <input type="text" name="message" placeholder="Введите сообщение..." required id="message-input" onfocus="bringUpInput()">
             <button type="submit">Отправить</button>
         </form>
     </div>
@@ -259,6 +274,22 @@
 
             messagesContainer.scrollTop = messagesContainer.scrollHeight; // Автоматическая прокрутка вниз
         }
+
+        function bringUpInput() {
+            const inputContainer = document.getElementById('input-container');
+            inputContainer.classList.add('active'); // Добавляем класс для анимации
+        }
+
+        // Скрывает клавиатуру
+        window.addEventListener('click', function (e) {
+            const inputContainer = document.getElementById('input-container');
+            const messageInput = document.getElementById('message-input');
+
+            if (!inputContainer.contains(e.target) && messageInput !== e.target) {
+                messageInput.blur(); // Закрываем клавиатуру
+                inputContainer.classList.remove('active'); // Сбрасываем анимацию
+            }
+        });
 
         window.onload = () => {
             fetchMessages(); // Загрузка сообщений при загрузке страницы
