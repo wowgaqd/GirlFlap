@@ -1,21 +1,239 @@
-   <!DOCTYPE html>
-   <html lang="ru">
-   <head>
-       <meta charset="UTF-8">
-       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <title>Удаление пользователя</title>
-   </head>
-   <body>
-       <input type="text" id="userId" placeholder="Введите ID пользователя">
-       <button onclick="sendUserId()">Удалить пользователя</button>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <title>Чат - Ваше Место для Общения</title>
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #2e2e2e, #121212);
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-size: 95%;
+            overflow: hidden; /* Запрет на прокрутку страницы */
+        }
 
-       <script>
-           function sendUserId() {
-               const userId = document.getElementById('userId').value;
-               if (userId) {
-                   Telegram.WebApp.sendData(userId);
-               }
-           }
-       </script>
-   </body>
-   </html>
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: center; /* Центрирование заголовка */
+            padding: 9.5px 19px;
+            background-color: #121212;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            color: #fff;
+            font-weight: 700;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .chat-container {
+            background-color: rgba(30, 30, 30, 0.9); /* Сделал более темным */
+            border-radius: 7.6px;
+            box-shadow: 0 1.9px 9.5px rgba(0, 0, 0, 0.5);
+            padding: 19px;
+            width: 90%;
+            max-width: 400px; /* Уменьшил ширину */
+            height: 400px; /* Уменьшил высоту */
+            overflow-y: auto; /* Включаем прокрутку только для чата */
+            margin: 19px auto;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Стили для кастомной прокрутки */
+        .chat-container::-webkit-scrollbar {
+            width: 12px; /* Ширина полоски прокрутки */
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 10px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #777; /* Цвет полоски при наведении */
+        }
+
+        .message {
+            background-color: #444;
+            border-radius: 7.6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1.9px 4.8px rgba(0, 0, 0, 0.3);
+            word-wrap: break-word;
+            transition: 0.3s;
+        }
+
+        .message:hover {
+            background-color: #555;
+        }
+
+        .message b {
+            color: #e0e0e0;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .message .player-tag {
+            background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+            color: black;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.6em;
+            margin-left: 5px;
+            display: inline-block;
+            text-align: center;
+            opacity: 0.85;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .message span {
+            font-size: 0.8em;
+            color: #888;
+            display: block;
+            margin-top: 3px;
+        }
+
+        .message p {
+            margin: 0;
+            font-size: 1em;
+            color: #ccc;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            width: 85%;
+            max-width: 400px; /* Уменьшил ширину */
+            margin: 0 auto;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px; /* Уменьшил внутренние отступы */
+            font-size: 14px; /* Уменьшил размер шрифта */
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            transition: border 0.3s; /* Плавный переход для границы */
+        }
+
+        button {
+            width: 100%;
+            padding: 10px; /* Уменьшил размер кнопки */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            font-size: 14px; /* Уменьшил размер шрифта кнопки */
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red; /* Цвет текста ошибки */
+            font-size: 14px; /* Размер текста для ошибки */
+            margin-top: 10px; /* Отступ сверху */
+            text-align: center; /* Центрован текст ошибки */
+            visibility: hidden; /* Скрываем сообщение по умолчанию */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Чат — Ваше Место для Общения</h1>
+    </div>
+
+    <div class="chat-container" id="chat-container"></div>
+
+    <div class="input-container">
+        <div class="error-message" id="error-message">Сообщение можно отправлять раз в 10 секунд</div>
+        <form id="chat-form" onsubmit="sendMessage(event)">
+            <input type="text" name="message" placeholder="Введите сообщение..." required id="message-input">
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+
+    <script>
+        let userId = localStorage.getItem('userId') || Math.floor(Math.random() * 1000); // Генерируем уникальный ID пользователя, если его нет в Local Storage
+        localStorage.setItem('userId', userId); // Сохраняем ID пользователя в Local Storage
+        const sendCooldown = 10000; // Ожидание 10 секунд в миллисекундах
+        let lastSendTime = 0; // Время последней отправки сообщения
+        let messages = JSON.parse(localStorage.getItem('messages')) || []; // Загружаем сообщения из Local Storage
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const messageInput = document.getElementById('message-input');
+            const messageText = messageInput.value.trim();
+            const currentTime = new Date().getTime();
+            const errorMessage = document.getElementById('error-message');
+
+            if (messageText) {
+                // Проверка на нажатие в нужный тайминг
+                if (currentTime - lastSendTime >= sendCooldown) {
+                    // Добавляем новое сообщение
+                    const newMessage = {
+                        user_id: userId,
+                        text: messageText,
+                        time: new Date().toLocaleString() // Текущее время
+                    };
+
+                    messages.push(newMessage); // Сохраняем сообщение
+                    localStorage.setItem('messages', JSON.stringify(messages)); // Сохраняем сообщения в Local Storage
+                    displayMessages(); // Обновляем отображение сообщений
+                    messageInput.value = ''; // Очищаем поле ввода
+                    lastSendTime = currentTime; // Обновляем время последней отправки
+                    errorMessage.style.visibility = 'hidden'; // Скрываем сообщение об ошибке
+                    messageInput.style.border = ''; // Сбрасываем стиль границы
+                } else {
+                    // Если отправить сообщение слишком рано
+                    errorMessage.style.visibility = 'visible'; // Показываем сообщение об ошибке
+                    messageInput.style.border = '1px solid red'; // Меняем цвет границы
+                }
+            }
+        }
+
+        function displayMessages() {
+            const messagesContainer = document.getElementById('chat-container');
+            messagesContainer.innerHTML = ''; // Очистить контейнер перед обновлением
+
+            messages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.innerHTML = `
+                    <b class="user">GirlFlal${message.user_id}<span class="player-tag">игрок</span></b>
+                    <p>${message.text}</p>
+                    <span>${message.time}</span>
+                `;
+                messagesContainer.appendChild(messageElement);
+            });
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight; // Автоматическая прокрутка вниз
+        }
+
+        // Вызываем displayMessages при загрузке страницы
+        window.onload = displayMessages;
+    </script>
+</body>
+</html>
