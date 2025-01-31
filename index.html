@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
     <title>Чат - Ваше Место для Общения</title>
     <style>
         /* Основные стили */
         body {
             font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, #2e2e2e, #121212);
+            background: linear-gradient(135deg, #282828, #121212);
             color: #e0e0e0;
             margin: 0;
             padding: 0;
@@ -24,7 +25,7 @@
             width: 100%;
             display: flex;
             justify-content: center; /* Центрирование заголовка */
-            padding: 9.5px 19px;
+            padding: 10px 0; /* Увеличенный отступ */
             background-color: #121212;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
@@ -41,8 +42,7 @@
             border-radius: 7.6px;
             box-shadow: 0 1.9px 9.5px rgba(0, 0, 0, 0.5);
             padding: 19px;
-            width: 90%;
-            max-width: 400px; /* Уменьшил ширину */
+            width: 70%; /* Увеличиваем ширину до 70% */
             height: 400px; /* Уменьшил высоту */
             overflow-y: auto; /* Включаем прокрутку только для чата */
             margin: 19px auto;
@@ -67,7 +67,7 @@
 
         .message {
             background-color: #444;
-            border-radius: 7.6px;
+            border-radius: 10px;
             padding: 10px;
             margin-bottom: 10px;
             box-shadow: 0 1.9px 4.8px rgba(0, 0, 0, 0.3);
@@ -116,34 +116,39 @@
         .input-container {
             display: flex;
             flex-direction: column;
-            width: 85%;
-            max-width: 400px; /* Уменьшил ширину */
+            width: 70%;  /* Увеличиваем ширину до 70% */
+            max-width: 500px; /* Увеличиваем максимальную ширину */
             margin: 0 auto;
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 10px; /* Уменьшил внутренние отступы */
-            font-size: 14px; /* Уменьшил размер шрифта */
+            padding: 12px; /* Увеличил внутренние отступы */
+            font-size: 16px; /* Увеличил размер шрифта */
             border: 1px solid #555;
-            border-radius: 4px;
-            background-color: #333;
+            border-radius: 25px; /* Скругление */
+            background: linear-gradient(135deg, #444444, #333333); /* Градиент */
             color: #e0e0e0;
             margin-bottom: 10px;
             transition: border 0.3s; /* Плавный переход для границы */
         }
 
+        input[type="text"]:focus {
+            outline: none;
+            border: 1px solid #007bff; /* Цвет рамки при фокусе */
+        }
+
         button {
             width: 100%;
-            padding: 10px; /* Уменьшил размер кнопки */
+            padding: 12px; /* Увеличил размер кнопки */
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 25px; /* Скругление */
             cursor: pointer;
             font-weight: 600;
             text-align: center;
-            font-size: 14px; /* Уменьшил размер шрифта кнопки */
+            font-size: 16px; /* Увеличил размер шрифта кнопки */
             transition: background-color 0.3s;
         }
 
@@ -154,12 +159,19 @@
         .error-message {
             color: red; /* Цвет текста ошибки */
             font-size: 14px; /* Размер текста для ошибки */
-            margin-top: 10px; /* Отступ сверху */
-            text-align: center; /* Центрован текст ошибки */
+            margin-top: -5px; /* Поднимаем текст ошибки */
+            margin-bottom: 10px; /* Отступ снизу */
             visibility: hidden; /* Скрываем сообщение по умолчанию */
+            text-align: center; /* Центровать текст ошибки */
+        }
+
+        /* Скрываем клавиатуру при нажатии на пустое место */
+        body:focus {
+            outline: none;
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h1>Чат — Ваше Место для Общения</h1>
@@ -170,12 +182,17 @@
     <div class="input-container">
         <div class="error-message" id="error-message">Сообщение можно отправлять раз в 10 секунд</div>
         <form id="chat-form" onsubmit="sendMessage(event)">
-            <input type="text" name="message" placeholder="Введите сообщение..." required id="message-input">
+            <input type="text" name="message" placeholder="Введите сообщение..." required id="message-input" onfocus="hideKeyboard()">
             <button type="submit">Отправить</button>
         </form>
     </div>
 
     <script>
+        // Функция для предотвращения прокрутки влево/вправо и вверх/вниз
+        window.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+        }, { passive: false });
+
         let userId = localStorage.getItem('userId') || Math.floor(Math.random() * 1000); // Генерируем уникальный ID пользователя, если его нет в Local Storage
         localStorage.setItem('userId', userId); // Сохраняем ID пользователя в Local Storage
         const sendCooldown = 10000; // Ожидание 10 секунд в миллисекундах
@@ -232,8 +249,14 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight; // Автоматическая прокрутка вниз
         }
 
+        function hideKeyboard() {
+            const messageInput = document.getElementById('message-input');
+            messageInput.blur(); // Закрываем клавиатуру
+        }
+
         // Вызываем displayMessages при загрузке страницы
         window.onload = displayMessages;
     </script>
 </body>
+
 </html>
