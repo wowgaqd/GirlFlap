@@ -15,22 +15,17 @@
             background: linear-gradient(to bottom right, #121212, #ffffff);
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Отключение прокрутки страницы */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            overflow: hidden; /* Отключение прокрутки сайта */
         }
 
         .menu {
             background-color: rgba(30, 30, 30, 0.9);
             border-radius: 15px;
-            padding: 20px;
+            padding: 10px; /* Уменьшение отступов */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            width: 90%; /* Изменено для адаптации */
-            max-width: 400px;
-            height: 70%;
+            width: 90%; /* Ширина для адаптации */
+            max-width: 300px; /* Уменьшенная максимальная ширина */
+            height: 55%; /* Уменьшение высоты */
             display: flex;
             flex-direction: column;
         }
@@ -48,9 +43,8 @@
             scrollbar-color: #555 #444; /* Цвет для Firefox */
         }
 
-        /* Кастомизация для Webkit (Chrome, Safari) */
         .content::-webkit-scrollbar {
-            width: 10px; /* Увеличена ширина */
+            width: 8px; /* Уменьшенная ширина полосы прокрутки */
         }
 
         .content::-webkit-scrollbar-track {
@@ -71,17 +65,17 @@
             display: flex;
             align-items: center;
             border: 1px solid rgba(128, 128, 128, 0.5);
-            padding: 10px;
+            padding: 5px; /* Уменьшение отступов */
             border-radius: 15px;
             background-color: rgba(50, 50, 50, 0.8);
         }
 
         input[type="text"] {
             flex-grow: 1;
-            padding: 10px;
+            padding: 5px; /* Уменьшение отступов */
             border: none;
             border-radius: 10px;
-            margin-right: 10px;
+            margin-right: 5px; /* Уменьшение отступа справа */
             background-color: rgba(255, 255, 255, 0.1);
             color: #ffffff;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -94,7 +88,7 @@
         }
 
         button {
-            padding: 10px 15px;
+            padding: 5px 10px; /* Уменьшение отступов */
             border: none;
             border-radius: 10px;
             background: linear-gradient(45deg, #800080, #dda0dd);
@@ -107,17 +101,11 @@
             background: linear-gradient(45deg, #a05cb3, #ff00ff);
         }
 
-        @media (max-width: 600px) {
-            .menu {
-                width: 90%;
-            }
-        }
-
         .message {
             background: linear-gradient(135deg, #4e4e4e 30%, #3a3a3a 100%);
-            border-radius: 10px;
-            padding: 8px 12px; /* Уменьшение отступов */
-            margin-bottom: 12px;
+            border-radius: 8px; /* Уменьшение радиуса */
+            padding: 5px 10px; /* Уменьшение отступов */
+            margin-bottom: 10px; /* Уменьшение нижнего отступа */
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
             word-wrap: break-word;
             position: relative;
@@ -125,36 +113,50 @@
             max-width: calc(100% - 20px); /* Уменьшение ширины сообщения */
         }
 
+        .tag {
+            display: inline-block;
+            background-color: rgba(128, 128, 128, 0.6);
+            border-radius: 15px;
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 5px; /* Отступы для тега */
+        }
+
         .message b {
             color: #e0e0e0;
-            font-size: 12px; /* Уменьшение размера шрифта имени */
+            font-size: 11px; /* Уменьшение размера шрифта имени */
             font-weight: bold;
         }
 
         .message p {
-            margin: 3px 0; /* Уменьшение отступов между строками */
-            font-size: 14px; /* Уменьшение размера шрифта сообщения */
+            margin: 2px 0; /* Уменьшение отступов между строками */
+            font-size: 12px; /* Уменьшение размера шрифта сообщения */
             color: #ccc;
         }
 
         .timestamp {
-            font-size: 10px; /* Уменьшение размера шрифта временной метки */
+            font-size: 9px; /* Уменьшение размера шрифта временной метки */
             color: #bbb;
-            margin-top: 5px;
+            margin-top: 3px;
         }
 
         .message .reply-button {
-            font-size: 10px; /* Уменьшение размера шрифта кнопки ответа */
+            font-size: 9px; /* Уменьшение размера шрифта кнопки ответа */
             color: #007bff;
             text-decoration: none;
             position: absolute;
-            bottom: 10px;
-            right: 10px;
+            bottom: 5px; /* Уменьшение нижнего отступа */
+            right: 5px; /* Уменьшение правого отступа */
+        }
+
+        @media (max-width: 600px) {
+            .menu {
+                padding: 10px; /* Ещё меньше отступы на мобильной версии */
+            }
         }
     </style>
 </head>
 <body>
-
 <div class="menu">
     <div class="content" id="message-container">
         <!-- Сообщения будут отображаться здесь -->
@@ -171,6 +173,9 @@
     const messageInput = document.getElementById('message-input');
     const messageContainer = document.getElementById('message-container');
 
+    let currentId = 0; // Уникальный идентификатор пользователя
+    const maxId = 1000;
+
     sendButton.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
@@ -180,16 +185,16 @@
 
     function sendMessage() {
         const messageText = messageInput.value.trim();
-        const username = "Пользователь"; // Здесь можно заменить на фактическое имя пользователя
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' });
-        const formattedTime = currentDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        if (currentId < maxId && messageText) {
+            const username = `Гость GirlFlap[${currentId}]`;
+            const currentDate = new Date();
+            const formattedDate = currentDate.toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const formattedTime = currentDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
-        if (messageText) {
             const message = document.createElement('div');
             message.classList.add('message');
             message.innerHTML = `
-                <b>${username}</b>
+                <span class="tag">Гость</span> <b>${username}</b>
                 <p>${messageText}</p>
                 <span class="timestamp">${formattedDate}, ${formattedTime}</span>
                 <a href="#reply" class="reply-button" onclick="document.getElementById('message-input').value = '@${username} ';">Ответить</a>
@@ -197,9 +202,9 @@
             messageContainer.appendChild(message);
             messageInput.value = '';
             messageContainer.scrollTop = messageContainer.scrollHeight; // Прокрутка вниз
+            currentId++; // Увеличение уникального идентификатора
         }
     }
 </script>
-
 </body>
 </html>
