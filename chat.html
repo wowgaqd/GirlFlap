@@ -39,8 +39,6 @@
             background-color: rgba(50, 50, 50, 0.8);
             margin-bottom: 8px;
             padding-bottom: 50px; /* Отступ снизу для учета области ввода */
-
-            /* Кастомизация прокрутки */
             scrollbar-width: thin; 
             scrollbar-color: #555 #444; 
         }
@@ -70,8 +68,8 @@
             padding: 8px; 
             border-radius: 10px;
             background-color: rgba(50, 50, 50, 0.8);
-            position: absolute; /* Сделано для фиксирования внизу */
-            bottom: 10px; /* Отступ от низу */
+            position: absolute; 
+            bottom: 10px; 
             left: 10px;
             right: 10px;
         }
@@ -121,9 +119,9 @@
             margin-bottom: 10px; 
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); 
             word-wrap: break-word;
-            position: relative;
             font-family: 'Arial', sans-serif;
             max-width: calc(100% - 20px); 
+            position: relative;
             display: flex; 
             flex-direction: column; 
             align-items: flex-start; 
@@ -169,10 +167,7 @@
 <body>
 
 <div class="menu" id="menu">
-    <div class="content" id="message-container">
-        <!-- Сообщения будут отображаться здесь -->
-    </div>
-
+    <div class="content" id="message-container"></div>
     <div class="input-area">
         <input type="text" id="message-input" placeholder="Введите сообщение...">
         <button id="send-button">Отправить</button>
