@@ -20,12 +20,12 @@
 
         .menu {
             background-color: rgba(30, 30, 30, 0.9);
-            border-radius: 10px; 
-            padding: 10px; 
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5); 
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
             width: 90%;
-            max-width: 320px; 
-            height: 80%; /* Увеличена высота меню */
+            max-width: 320px;
+            height: 65%; /* Установлена высота 65% от высоты окна */
             display: flex;
             flex-direction: column;
             position: relative;
@@ -33,11 +33,12 @@
 
         .content {
             flex-grow: 1;
-            overflow-y: auto; 
+            overflow-y: auto;
             padding: 8px;
             border-radius: 8px;
             background-color: rgba(50, 50, 50, 0.8);
-            margin-bottom: 8px; 
+            margin-bottom: 8px;
+            padding-bottom: 50px; /* Отступ снизу для учета области ввода */
 
             /* Кастомизация прокрутки */
             scrollbar-width: thin; 
@@ -123,9 +124,9 @@
             position: relative;
             font-family: 'Arial', sans-serif;
             max-width: calc(100% - 20px); 
-            display: flex; /* Изменено для вертикального расположения */
-            flex-direction: column; /* Столбиковое расположение */
-            align-items: flex-start; /* Выровнено по левому краю */
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-start; 
         }
 
         .message b {
@@ -190,6 +191,9 @@
         localStorage.setItem('userID', userID);
     }
 
+    // Загрузка существующих сообщений
+    loadMessages();
+
     sendButton.addEventListener('click', sendMessage);
 
     // Скрытие клавиатуры при нажатии на пустое пространство
@@ -207,19 +211,49 @@
         const formattedTime = currentDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
         if (messageText) {
-            const message = document.createElement('div');
-            message.classList.add('message');
-            message.innerHTML = `
-                <b>${username}<span class="guest-tag">Гость</span></b>
-                <p>${messageText}</p>
-                <span class="timestamp">${formattedDate}, ${formattedTime}</span>
-                <a href="#reply" class="reply-button" onclick="document.getElementById('message-input').value = '@${username} ';">Ответить</a>
-            `;
-            messageContainer.appendChild(message);
+            const message = {
+                username: username,
+                text: messageText,
+                date: formattedDate,
+                time: formattedTime
+            };
+
+            // Сохранение нового сообщения
+            saveMessage(message);
             messageInput.value = '';
-            messageContainer.scrollTop = messageContainer.scrollHeight; // Прокрутка вниз
+
+            // Обновление содержимого контейнера
+            displayMessage(message);
         }
     }
+
+    function saveMessage(message) {
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messages.push(message);
+        localStorage.setItem('messages', JSON.stringify(messages));
+    }
+
+    function loadMessages() {
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messageContainer.innerHTML = ''; // Очистка контейнера перед загрузкой
+        messages.forEach(displayMessage);
+    }
+
+    function displayMessage(message) {
+        const msgElement = document.createElement('div');
+        msgElement.classList.add('message');
+        msgElement.innerHTML = `
+            <b>${message.username}<span class="guest-tag">Гость</span></b>
+            <p>${message.text}</p>
+            <span class="timestamp">${message.date}, ${message.time}</span>
+            <a href="#reply" class="reply-button" onclick="document.getElementById('message-input').value = '@${message.username} ';">Ответить</a>
+        `;
+        messageContainer.appendChild(msgElement);
+        messageContainer.scrollTop = messageContainer.scrollHeight; // Прокрутка вниз
+    }
+
+    // Обновление сообщений каждые 10 секунд
+    setInterval(loadMessages, 10000);
 </script>
 
 </body>
