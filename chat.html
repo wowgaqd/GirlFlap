@@ -20,62 +20,67 @@
 
         .menu {
             background-color: rgba(30, 30, 30, 0.9);
-            border-radius: 10px; /* Уменьшено закругление */
-            padding: 10px; /* Уменьшены отступы */
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5); /* Уменьшена тень */
+            border-radius: 10px; 
+            padding: 10px; 
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5); 
             width: 90%;
-            max-width: 320px; /* Меньше максимальный размер для мобильной версии */
-            height: 70%;
+            max-width: 320px; 
+            height: 80%; /* Увеличена высота меню */
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .content {
             flex-grow: 1;
             overflow-y: auto; 
-            padding: 8px; /* Уменьшены отступы */
-            border-radius: 8px; /* Закругление */
+            padding: 8px;
+            border-radius: 8px;
             background-color: rgba(50, 50, 50, 0.8);
-            margin-bottom: 8px; /* Уменьшены отступы */
+            margin-bottom: 8px; 
 
             /* Кастомизация прокрутки */
-            scrollbar-width: thin; /* Firefox */
-            scrollbar-color: #555 #444; /* Цвет для Firefox */
+            scrollbar-width: thin; 
+            scrollbar-color: #555 #444; 
         }
 
         .content::-webkit-scrollbar {
-            width: 8px; /* Уменьшана ширина */
+            width: 8px; 
         }
 
         .content::-webkit-scrollbar-track {
-            background: #444; /* Цвет заднего фона полоски прокрутки */
-            border-radius: 8px; /* Закругление */
+            background: #444; 
+            border-radius: 8px; 
         }
 
         .content::-webkit-scrollbar-thumb {
-            background-color: #555; /* Цвет ползунка */
-            border-radius: 8px; /* Закругление */
+            background-color: #555; 
+            border-radius: 8px; 
         }
 
         .content::-webkit-scrollbar-thumb:hover {
-            background: #777; /* Цвет ползунка при наведении */
+            background: #777; 
         }
 
         .input-area {
             display: flex;
             align-items: center;
             border: 1px solid rgba(128, 128, 128, 0.5);
-            padding: 8px; /* Уменьшены отступы */
+            padding: 8px; 
             border-radius: 10px;
             background-color: rgba(50, 50, 50, 0.8);
+            position: absolute; /* Сделано для фиксирования внизу */
+            bottom: 10px; /* Отступ от низу */
+            left: 10px;
+            right: 10px;
         }
 
         input[type="text"] {
             flex-grow: 1;
-            padding: 8px; /* Уменьшены отступы */
+            padding: 8px; 
             border: none;
-            border-radius: 8px; /* Закругление */
-            margin-right: 8px; /* Уменьшены отступы */
+            border-radius: 8px; 
+            margin-right: 8px; 
             background-color: rgba(255, 255, 255, 0.1);
             color: #ffffff;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -88,9 +93,9 @@
         }
 
         button {
-            padding: 8px 12px; /* Уменьшены отступы */
+            padding: 8px 12px; 
             border: none;
-            border-radius: 8px; /* Закругление */
+            border-radius: 8px; 
             background: linear-gradient(45deg, #800080, #dda0dd);
             color: white;
             cursor: pointer;
@@ -104,42 +109,45 @@
         @media (max-width: 600px) {
             .menu {
                 width: 95%;
-                max-width: 90%; /* Меньше максимальный размер для мобильной версии */
+                max-width: 90%; 
             }
         }
 
         .message {
             background: linear-gradient(135deg, #4e4e4e 30%, #3a3a3a 100%);
-            border-radius: 8px; /* Закругление */
-            padding: 6px 10px; /* Уменьшены отступы */
-            margin-bottom: 10px; /* Уменьшены отступы */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Уменьшена тень */
+            border-radius: 8px; 
+            padding: 6px 10px; 
+            margin-bottom: 10px; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); 
             word-wrap: break-word;
             position: relative;
             font-family: 'Arial', sans-serif;
-            max-width: calc(100% - 20px); /* Уменьшение ширины сообщения */
+            max-width: calc(100% - 20px); 
+            display: flex; /* Изменено для вертикального расположения */
+            flex-direction: column; /* Столбиковое расположение */
+            align-items: flex-start; /* Выровнено по левому краю */
         }
 
         .message b {
             color: #e0e0e0;
-            font-size: 11px; /* Уменьшение размера шрифта имени */
+            font-size: 11px; 
             font-weight: bold;
         }
 
         .message p {
-            margin: 2px 0; /* Уменьшены отступы между строками */
-            font-size: 13px; /* Уменьшение размера шрифта сообщения */
+            margin: 2px 0; 
+            font-size: 13px; 
             color: #ccc;
         }
 
         .timestamp {
-            font-size: 9px; /* Уменьшение размера шрифта временной метки */
+            font-size: 9px; 
             color: #bbb;
             margin-top: 4px;
         }
 
         .message .reply-button {
-            font-size: 9px; /* Уменьшение размера шрифта кнопки ответа */
+            font-size: 9px; 
             color: #007bff;
             text-decoration: none;
             position: absolute;
@@ -159,7 +167,7 @@
 </head>
 <body>
 
-<div class="menu">
+<div class="menu" id="menu">
     <div class="content" id="message-container">
         <!-- Сообщения будут отображаться здесь -->
     </div>
@@ -183,6 +191,13 @@
     }
 
     sendButton.addEventListener('click', sendMessage);
+
+    // Скрытие клавиатуры при нажатии на пустое пространство
+    document.body.addEventListener('click', function(event) {
+        if (event.target !== messageInput && !messageInput.contains(event.target)) {
+            messageInput.blur(); // Скрывает клавиатуру
+        }
+    });
 
     function sendMessage() {
         const messageText = messageInput.value.trim();
