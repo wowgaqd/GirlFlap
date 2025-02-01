@@ -12,6 +12,7 @@
             background-color: #121212;
             color: #ffffff;
             overflow-y: scroll;
+            overflow-x: hidden; /* Запрет на горизонтальную прокрутку */
             animation: fadeIn 0.5s ease-in-out;
         }
 
@@ -20,18 +21,17 @@
             to { opacity: 1; }
         }
 
-        .fade-in {
+        .fade-in-from-bottom {
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
 
-        .fade-in.visible {
+        .fade-in-from-bottom.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Стили кастомной полосы прокрутки */
         ::-webkit-scrollbar {
             width: 12px;
         }
@@ -60,7 +60,7 @@
 
         header img {
             max-width: 120px;
-            filter: brightness(0) invert(1); /* Применяем фильтр для белого логотипа */
+            filter: brightness(0) invert(1);
         }
 
         h1 {
@@ -70,10 +70,9 @@
         }
 
         .top-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            justify-content: center;
             gap: 15px;
-            justify-items: center;
             margin: 20px;
         }
 
@@ -143,7 +142,7 @@
             text-align: center;
             transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
             font-weight: 600;
-            background-color: rgba(255, 255, 255, 0.1); /* Полупрозрачный фон */
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .btn:hover {
@@ -151,7 +150,6 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
 
-        /* Уникальные градиенты для каждой кнопки */
         .btn.original { background: linear-gradient(45deg, #ff007f, #00ff7f); }
         .btn.fire    { background: linear-gradient(45deg, #ff3300, #ffcc00); }
         .btn.water   { background: linear-gradient(45deg, #0000ff, #8a2be2); }
@@ -164,7 +162,6 @@
         .btn.paradice { background: linear-gradient(45deg, #00ff00, #ffffff); }
         .btn.shop    { background: linear-gradient(45deg, #f39c12, #e74c3c); }
 
-        /* Снежинки */
         .snowflake {
             position: absolute;
             top: -10px;
@@ -179,30 +176,25 @@
             100% { transform: translateY(100vh); opacity: 0; }
         }
 
-        /* Разные размеры и задержки для снежинок */
-        .snowflake:nth-child(1) { width: 5px; height: 5px; left: 10%; animation-duration: 5s; animation-delay: 0s; }
-        .snowflake:nth-child(2) { width: 8px; height: 8px; left: 30%; animation-duration: 7s; animation-delay: 1.5s; }
-        .snowflake:nth-child(3) { width: 6px; height: 6px; left: 50%; animation-duration: 4s; animation-delay: 2.5s; }
-        .snowflake:nth-child(4) { width: 7px; height: 7px; left: 70%; animation-duration: 6s; animation-delay: 1s; }
-        .snowflake:nth-child(5) { width: 4px; height: 4px; left: 80%; animation-duration: 8s; animation-delay: 3s; }
-        .snowflake:nth-child(6) { width: 5px; height: 5px; left: 20%; animation-duration: 5s; animation-delay: 0.5s; }
-        .snowflake:nth-child(7) { width: 8px; height: 8px; left: 40%; animation-duration: 7s; animation-delay: 1.7s; }
-        .snowflake:nth-child(8) { width: 6px; height: 6px; left: 60%; animation-duration: 4s; animation-delay: 2.3s; }
-        .snowflake:nth-child(9) { width: 7px; height: 7px; left: 80%; animation-duration: 6s; animation-delay: 1.2s; }
-        .snowflake:nth-child(10) { width: 4px; height: 4px; left: 90%; animation-duration: 8s; animation-delay: 3.5s; }
+        .snowflake:nth-child(1) { width: 5px; height: 5px; left: 10%; animation-duration: 5s; }
+        .snowflake:nth-child(2) { width: 8px; height: 8px; left: 30%; animation-duration: 7s; }
+        .snowflake:nth-child(3) { width: 6px; height: 6px; left: 50%; animation-duration: 4s; }
+        .snowflake:nth-child(4) { width: 7px; height: 7px; left: 70%; animation-duration: 6s; }
+        .snowflake:nth-child(5) { width: 4px; height: 4px; left: 80%; animation-duration: 8s; }
+        .snowflake:nth-child(6) { width: 5px; height: 5px; left: 20%; animation-duration: 5s; }
+        .snowflake:nth-child(7) { width: 8px; height: 8px; left: 40%; animation-duration: 7s; }
+        .snowflake:nth-child(8) { width: 6px; height: 6px; left: 60%; animation-duration: 4s; }
+        .snowflake:nth-child(9) { width: 7px; height: 7px; left: 80%; animation-duration: 6s; }
+        .snowflake:nth-child(10) { width: 4px; height: 4px; left: 90%; animation-duration: 8s; }
 
-        /* Адаптация для мобильных устройств */
         @media (max-width: 600px) {
             header h1 { font-size: 1.5em; }
-            .top-buttons { grid-template-columns: repeat(2, 1fr); }
+            .top-buttons { flex-direction: column; }
             .bot-card h3 { font-size: 1.2em; }
             .btn { font-size: 0.9em; }
-            .top-button img {
-                width: 80px; /* Уменьшаем размер изображений на мобильных устройствах */
-            }
+            .top-button img { width: 80px; }
         }
-        
-        /* Прогрузка страницы */
+
         .loader {
             position: fixed;
             top: 0;
@@ -247,20 +239,8 @@
     <a href="profile" class="top-button fade-in">
         <img src="images/myprofile.png" alt="Профиль">
     </a>
-    <a href="captok_genre" class="top-button fade-in">
-        <img src="images/captok.png" alt="Капток">
-    </a>
-    <a href="https://t.me/capture_managerbot?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="top-button fade-in">
-        <img src="images/mbot.png" alt="Менеджер">
-    </a>
     <a href="chat" class="top-button fade-in">
         <img src="images/chat.png" alt="Чат">
-    </a>
-    <a href="http://t.me/CAPTURESUPPBOT" class="top-button fade-in">
-        <img src="images/TS.png" alt="TS">
-    </a>
-    <a href="shop" class="top-button fade-in">
-        <img src="images/shop.png" alt="Shop">
     </a>
 </div>
 
@@ -278,70 +258,76 @@
 </div>
 
 <section class="bot-container">
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_da52e767caa1262272370ddaa70901ff_678582a26a0f7.jpg" alt="Original 🏆">
         <h3>Original 🏆</h3>
         <a href="https://t.me/CAPTURENETBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn original">Перейти</a>
     </div>
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_bc40f60ac4efd51f9e3ea11377a48aef_678582a25bb41.jpg" alt="Fire 🔥">
         <h3>Fire 🔥</h3>
         <a href="https://t.me/CAPTURENETFIREBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn fire">Перейти</a>
     </div>
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_3b2e1884c7560b2867057608992085d0_678582a279f5d.jpg" alt="Water 💦">
         <h3>Water 💦</h3>
         <a href="https://t.me/CAPTURENETWATERBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn water">Перейти</a>
     </div>
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_e8627dc635e67f087d55c5864d9d728a_678582a25ea0e.jpg" alt="Ice 🧊">
         <h3>Ice 🧊</h3>
         <a href="https://t.me/CAPTURENETICEBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn ice">Перейти</a>
     </div>
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_708367c59be2320c53210fb922ec39f3_678582a264409.jpg" alt="Kiwi 🥝">
         <h3>Kiwi 🥝</h3>
         <a href="https://t.me/CAPTURENETKIWIBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn kiwi">Перейти</a>
     </div>
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_4451239be57bc343aa44996078596458_678582a274a22.jpg" alt="Sand ⌛">
         <h3>Sand ⌛</h3>
         <a href="https://t.me/CAPTURENETSANDBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn sand">Перейти</a>
     </div>
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_58c960283f66e394a417d4543f9f25c9_678582a2614dd.jpg" alt="Japan 🇯🇵">
         <h3>Japan 🇯🇵</h3>
         <a href="https://t.me/CAPTURENETJAPANBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn japan">Перейти</a>
     </div>
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_57e565f2a143f0e4bcae98ee4bee8710_678582a267483.jpg" alt="Lolipop 🍭">
         <h3>Lolipop 🍭</h3>
         <a href="https://t.me/CAPTURENETLOLIPOPBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn lollipop">ЗАБАНЕН</a>
     </div>
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_9fa758c108cd8272b207e59180e50b0d_678582a27764e.jpg" alt="Tyler 🥼">
         <h3>Tyler 🥼</h3>
         <a href="https://t.me/CAPTURENETTYLERBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn tyler">Перейти</a>
     </div>
-    <div class="bot-card fade-in">
+    <div class="bot-card fade-in-from-bottom">
         <img src="images/remove_image_metadata_ba48fea6a0e332db768718d0f4654483_678582a26de66.jpg" alt="Paradice 🌌">
         <h3>Paradise 🌌</h3>
         <a href="https://t.me/CAPTURENETPARADISEBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn paradice">Перейти</a>
     </div>
 </section>
 
+<footer style="background-color: #1e1e1e; color: #ffffff; text-align: center; padding: 20px; position: relative; bottom: 0; width: 100%;">
+    <p>Сайт был разработан командой 'GirlFap' вся информация о сайте скрыта</p>
+    <p>&copy; 2025 GirlFlap - Сайт держит анонимность на максимальном уровне</p>
+</footer>
+
 <script>
     window.onload = function() {
         const loader = document.querySelector('.loader');
         loader.style.display = 'none';
         
-        const fadeIns = document.querySelectorAll('.fade-in');
+        const fadeIns = document.querySelectorAll('.fade-in, .fade-in-from-bottom');
         fadeIns.forEach((el) => {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
+                    } else {
+                        entry.target.classList.remove('visible'); // удалить класс, если выходит из области видимости
                     }
                 });
             });
@@ -352,3 +338,4 @@
 
 </body>
 </html>
+
