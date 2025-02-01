@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Меню сайта</title>
     <style>
         body {
@@ -15,8 +15,7 @@
             background: linear-gradient(to bottom right, #121212, #ffffff);
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            opacity: 0;
-            animation: fadeIn 1s forwards;
+            overflow: hidden; /* Отключение прокрутки страницы */
         }
 
         @keyframes fadeIn {
@@ -29,7 +28,7 @@
             border-radius: 15px;
             padding: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            width: 80%;
+            width: 90%; /* Изменено для адаптации */
             max-width: 400px;
             height: 70%;
             display: flex;
@@ -43,26 +42,29 @@
             border-radius: 10px;
             background-color: rgba(50, 50, 50, 0.8);
             margin-bottom: 10px;
-            scrollbar-width: thin;
-            scrollbar-color: #555 #444; 
+
+            /* Кастомизация прокрутки */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #555 #444; /* Цвет для Firefox */
         }
 
+        /* Кастомизация для Webkit (Chrome, Safari) */
         .content::-webkit-scrollbar {
-            width: 10px;
+            width: 10px; /* Увеличена ширина */
         }
 
         .content::-webkit-scrollbar-track {
-            background: #444;
-            border-radius: 10px;
+            background: #444; /* Цвет заднего фона полоски прокрутки */
+            border-radius: 10px; /* Закругление */
         }
 
         .content::-webkit-scrollbar-thumb {
-            background-color: #555;
-            border-radius: 10px;
+            background-color: #555; /* Цвет ползунка */
+            border-radius: 10px; /* Закругление */
         }
 
         .content::-webkit-scrollbar-thumb:hover {
-            background: #777; 
+            background: #777; /* Цвет ползунка при наведении */
         }
 
         .input-area {
@@ -107,29 +109,47 @@
 
         @media (max-width: 600px) {
             .menu {
-                width: 95%; /* Увеличение ширины для мобильных устройств */
+                width: 90%;
             }
-            .message {
-                padding: 6px 10px; /* Уменьшение отступов */
-            }
-            .message b {
-                font-size: 12px; 
-            }
-            .message p {
-                font-size: 12px; /* Уменьшение размера шрифта сообщения */
-            }
-            .timestamp {
-                font-size: 9px; /* Уменьшение размера шрифта временной метки */
-            }
-            .message .reply-button {
-                font-size: 9px; /* Уменьшение размера шрифта кнопки ответа */
-            }
-            input[type="text"] {
-                padding: 8px; /* Уменьшение отступов в инпуте */
-            }
-            button {
-                padding: 8px 12px; /* Уменьшение отступов в кнопке */
-            }
+        }
+
+        .message {
+            background: linear-gradient(135deg, #4e4e4e 30%, #3a3a3a 100%);
+            border-radius: 10px;
+            padding: 8px 12px; /* Уменьшение отступов */
+            margin-bottom: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            word-wrap: break-word;
+            position: relative;
+            font-family: 'Arial', sans-serif;
+            max-width: calc(100% - 20px); /* Уменьшение ширины сообщения */
+        }
+
+        .message b {
+            color: #e0e0e0;
+            font-size: 12px; /* Уменьшение размера шрифта имени */
+            font-weight: bold;
+        }
+
+        .message p {
+            margin: 3px 0; /* Уменьшение отступов между строками */
+            font-size: 14px; /* Уменьшение размера шрифта сообщения */
+            color: #ccc;
+        }
+
+        .timestamp {
+            font-size: 10px; /* Уменьшение размера шрифта временной метки */
+            color: #bbb;
+            margin-top: 5px;
+        }
+
+        .message .reply-button {
+            font-size: 10px; /* Уменьшение размера шрифта кнопки ответа */
+            color: #007bff;
+            text-decoration: none;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
         }
     </style>
 </head>
@@ -176,7 +196,7 @@
             `;
             messageContainer.appendChild(message);
             messageInput.value = '';
-            messageContainer.scrollTop = messageContainer.scrollHeight;
+            messageContainer.scrollTop = messageContainer.scrollHeight; // Прокрутка вниз
         }
     }
 </script>
