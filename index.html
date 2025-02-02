@@ -359,7 +359,7 @@
         <h2>Введите ваш NickName</h2>
         <input type="text" id="nicknameInput" placeholder="Ваш NickName" />
         <span class="error-message" id="errorMessage">Никнейм не должен превышать 10 символов и должен содержать минимум 6 символов.</span>
-        <span class="nickname-error" id="nicknameError">К сожалению, данный ник является запрещен для пользователей.</span>
+        <span class="nickname-error" id="nicknameError">К сожалению, данный ник является запрещенным для пользователей.</span>
         <button id="saveNickname" class="btn save">Сохранить</button>
     </div>
 </div>
@@ -418,23 +418,22 @@
     });
 
     document.getElementById('saveNickname').addEventListener('click', function() {
-        const nicknameInput = document.getElementById('nicknameInput').value.trim();
+        let nicknameInput = document.getElementById('nicknameInput').value.trim();
+
+        // Замена ключа
+        if (nicknameInput.includes('KEY')) {
+            nicknameInput = nicknameInput.replace(/KEY/g, 'GirlFlap');
+        }
+
         const errorMessage = document.getElementById('errorMessage');
         const nicknameError = document.getElementById('nicknameError');
-    
-        // Проверка на запрещенный ник
+
+        // Проверка на разрешенные ники
         const isAdminNicknameUsed = localStorage.getItem('isAdminNicknameUsed') === 'true';
-    
+
         if (nicknameInput === 'DreamGirl') {
-            localStorage.setItem('nickname', nicknameInput);
-            localStorage.setItem('isAdminNicknameUsed', 'true');
-            document.getElementById('nicknameText').innerText = nicknameInput;
-            document.getElementById('nicknameDisplay').style.display = 'block';
-            document.getElementById('nicknameModal').style.display = 'none';
-            errorMessage.style.display = 'none'; 
-            nicknameError.style.display = 'none'; 
-            const chatUrl = `chat.html?nickname=${encodeURIComponent(nicknameInput)}`;
-            window.location.href = chatUrl;
+            errorMessage.style.display = 'none';
+            nicknameError.style.display = 'block';
         } else if (nicknameInput.length < 6) {
             errorMessage.innerText = "Никнейм должен содержать минимум 6 символов.";
             errorMessage.style.display = 'block';
@@ -443,24 +442,19 @@
             errorMessage.innerText = "Никнейм не должен превышать 10 символов.";
             errorMessage.style.display = 'block';
             nicknameError.style.display = 'none'; 
-        } else if (nicknameInput === 'DreamGirl') {
-            errorMessage.style.display = 'none'; 
+        } else if (isAdminNicknameUsed && localStorage.getItem('nickname') === nicknameInput) {
+            errorMessage.style.display = 'none';
             nicknameError.style.display = 'block'; 
         } else {
-            const existingNickname = localStorage.getItem('nickname');
-            if (existingNickname === nicknameInput) {
-                errorMessage.style.display = 'none';
-                nicknameError.style.display = 'block'; 
-            } else {
-                localStorage.setItem('nickname', nicknameInput);
-                document.getElementById('nicknameText').innerText = nicknameInput;
-                document.getElementById('nicknameDisplay').style.display = 'block';
-                document.getElementById('nicknameModal').style.display = 'none';
-                errorMessage.style.display = 'none'; 
-                nicknameError.style.display = 'none'; 
-                const chatUrl = `chat.html?nickname=${encodeURIComponent(nicknameInput)}`;
-                window.location.href = chatUrl;
-            }
+            localStorage.setItem('nickname', nicknameInput);
+            document.getElementById('nicknameText').innerText = nicknameInput;
+            document.getElementById('nicknameDisplay').style.display = 'block';
+            document.getElementById('nicknameModal').style.display = 'none';
+            errorMessage.style.display = 'none'; 
+            nicknameError.style.display = 'none'; 
+
+            const chatUrl = `chat.html?nickname=${encodeURIComponent(nicknameInput)}`;
+            window.location.href = chatUrl;
         }
     });    
 
