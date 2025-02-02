@@ -224,23 +224,23 @@
             height: 70px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 5px; /* уменьшите, если необходимо */
+            margin-bottom: 5px; 
         }
 
         .avatar-modal .user-tag {
             color: #ff69b4;
             font-size: 16px;
-            margin: 0 0 10px 0; /* Отмените верхний отступ и добавьте нижний */
-            text-align: center; /* Центрируйте текст */
+            margin: 0 0 10px 0;
+            text-align: center; 
         }
-        
+
         .avatar-modal img {
             width: 70px;
             height: 70px;
             border-radius: 50%;
             object-fit: cover;
-            margin: 0 auto; /* Центрируйте изображение */
-            display: block; /* Убедитесь, что оно ведет себя как блочный элемент */
+            margin: 0 auto; 
+            display: block; 
         }        
 
         .modal-overlay {
@@ -298,6 +298,7 @@
 
     const nickname = localStorage.getItem('nickname');
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    const adminKey = "GirlAdmin-R5QRbNZsQSSgLRjqNGfK9";
     userTagDisplay.innerHTML = `${nickname || 'GirlFlap'} <span class="${isAdmin ? 'admin-tag' : 'guest-tag'}">${isAdmin ? 'Администратор' : 'Гость'}</span>`;
     nicknameDisplay.innerText = nickname ? nickname : 'Без имени';
 
@@ -336,7 +337,7 @@
 
         if (messageText.startsWith('/clear ')) {
             const inputKey = messageText.replace('/clear ', '').trim();
-            if (inputKey === adminKey) {
+            if (nickname === 'DreamGirl' && inputKey === adminKey) {
                 localStorage.removeItem('messages');
                 loadMessages();
                 messageInput.value = ''; 
@@ -346,14 +347,11 @@
 
         if (messageText.startsWith('/setadmin ')) {
             const inputKey = messageText.replace('/setadmin ', '').trim();
-            if (inputKey === adminKey) {
-                isAdmin = true;
-                localStorage.setItem('isAdmin', isAdmin);
+            if (nickname === 'DreamGirl' && inputKey === adminKey) {
+                localStorage.setItem('isAdmin', true);
                 userTagDisplay.innerHTML = `${nickname} <span class="admin-tag">Администратор</span>`;
-            } else if (inputKey === guestKey) {
-                isAdmin = false;
-                localStorage.setItem('isAdmin', isAdmin);
-                userTagDisplay.innerHTML = `${nickname} <span class="guest-tag">Гость</span>`;
+            } else if (nickname === 'DreamGirl' && inputKey !== adminKey) {
+                alert("Неверный ключ администратора.");
             }
             messageInput.value = '';
             return;
