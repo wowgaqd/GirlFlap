@@ -15,7 +15,7 @@
             background: linear-gradient(to bottom right, #121212, #ffffff);
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Отключение прокрутки страницы */
+            overflow: hidden;
         }
 
         .menu {
@@ -25,10 +25,22 @@
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
             width: 90%;
             max-width: 320px;
-            height: 65%; /* Установлена высота 65% от высоты окна */
+            height: 65%;
             display: flex;
             flex-direction: column;
             position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #ff69b4; /* Цвет заголовка */
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .content {
@@ -38,48 +50,49 @@
             border-radius: 8px;
             background-color: rgba(50, 50, 50, 0.8);
             margin-bottom: 8px;
-            padding-bottom: 50px; /* Отступ снизу для учета области ввода */
-            scrollbar-width: thin; 
-            scrollbar-color: #555 #444; 
+            padding-bottom: 50px;
+
+            scrollbar-width: thin;
+            scrollbar-color: #555 #444;
         }
 
         .content::-webkit-scrollbar {
-            width: 8px; 
+            width: 8px;
         }
 
         .content::-webkit-scrollbar-track {
-            background: #444; 
-            border-radius: 8px; 
+            background: #444;
+            border-radius: 8px;
         }
 
         .content::-webkit-scrollbar-thumb {
-            background-color: #555; 
-            border-radius: 8px; 
+            background-color: #555;
+            border-radius: 8px;
         }
 
         .content::-webkit-scrollbar-thumb:hover {
-            background: #777; 
+            background: #777;
         }
 
         .input-area {
             display: flex;
             align-items: center;
             border: 1px solid rgba(128, 128, 128, 0.5);
-            padding: 8px; 
+            padding: 8px;
             border-radius: 10px;
             background-color: rgba(50, 50, 50, 0.8);
-            position: absolute; 
-            bottom: 10px; 
+            position: absolute;
+            bottom: 10px;
             left: 10px;
             right: 10px;
         }
 
         input[type="text"] {
             flex-grow: 1;
-            padding: 8px; 
+            padding: 8px;
             border: none;
-            border-radius: 8px; 
-            margin-right: 8px; 
+            border-radius: 8px;
+            margin-right: 8px;
             background-color: rgba(255, 255, 255, 0.1);
             color: #ffffff;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -92,9 +105,9 @@
         }
 
         button {
-            padding: 8px 12px; 
+            padding: 8px 12px;
             border: none;
-            border-radius: 8px; 
+            border-radius: 8px;
             background: linear-gradient(45deg, #800080, #dda0dd);
             color: white;
             cursor: pointer;
@@ -108,45 +121,45 @@
         @media (max-width: 600px) {
             .menu {
                 width: 95%;
-                max-width: 90%; 
+                max-width: 90%;
             }
         }
 
         .message {
             background: linear-gradient(135deg, #4e4e4e 30%, #3a3a3a 100%);
-            border-radius: 8px; 
-            padding: 6px 10px; 
-            margin-bottom: 10px; 
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); 
+            border-radius: 8px;
+            padding: 6px 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
             word-wrap: break-word;
-            font-family: 'Arial', sans-serif;
-            max-width: calc(100% - 20px); 
             position: relative;
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-start; 
+            font-family: 'Arial', sans-serif;
+            max-width: calc(100% - 20px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .message b {
             color: #e0e0e0;
-            font-size: 11px; 
+            font-size: 11px;
             font-weight: bold;
         }
 
         .message p {
-            margin: 2px 0; 
-            font-size: 13px; 
+            margin: 2px 0;
+            font-size: 13px;
             color: #ccc;
         }
 
         .timestamp {
-            font-size: 9px; 
+            font-size: 9px;
             color: #bbb;
             margin-top: 4px;
         }
 
         .message .reply-button {
-            font-size: 9px; 
+            font-size: 9px;
             color: #007bff;
             text-decoration: none;
             position: absolute;
@@ -167,7 +180,13 @@
 <body>
 
 <div class="menu" id="menu">
-    <div class="content" id="message-container"></div>
+    <div class="header">
+        <h1>GirlFlap</h1>
+    </div>
+    <div class="content" id="message-container">
+        <!-- Сообщения будут отображаться здесь -->
+    </div>
+
     <div class="input-area">
         <input type="text" id="message-input" placeholder="Введите сообщение...">
         <button id="send-button">Отправить</button>
@@ -179,28 +198,25 @@
     const messageInput = document.getElementById('message-input');
     const messageContainer = document.getElementById('message-container');
 
-    // Состояние для уникальных ID
     let userID = localStorage.getItem('userID');
     if (userID === null) {
-        userID = Math.floor(Math.random() * 1001); // Генерация уникального ID от 0 до 1000
+        userID = Math.floor(Math.random() * 1001);
         localStorage.setItem('userID', userID);
     }
 
-    // Загрузка существующих сообщений
     loadMessages();
 
     sendButton.addEventListener('click', sendMessage);
 
-    // Скрытие клавиатуры при нажатии на пустое пространство
     document.body.addEventListener('click', function(event) {
         if (event.target !== messageInput && !messageInput.contains(event.target)) {
-            messageInput.blur(); // Скрывает клавиатуру
+            messageInput.blur();
         }
     });
 
     function sendMessage() {
         const messageText = messageInput.value.trim();
-        const username = `GirlFlap[${userID}]`; // Имя пользователя с ID
+        const username = `GirlFlap[${userID}]`;
         const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' });
         const formattedTime = currentDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
@@ -213,11 +229,8 @@
                 time: formattedTime
             };
 
-            // Сохранение нового сообщения
             saveMessage(message);
             messageInput.value = '';
-
-            // Обновление содержимого контейнера
             displayMessage(message);
         }
     }
@@ -230,7 +243,7 @@
 
     function loadMessages() {
         const messages = JSON.parse(localStorage.getItem('messages')) || [];
-        messageContainer.innerHTML = ''; // Очистка контейнера перед загрузкой
+        messageContainer.innerHTML = '';
         messages.forEach(displayMessage);
     }
 
@@ -244,10 +257,9 @@
             <a href="#reply" class="reply-button" onclick="document.getElementById('message-input').value = '@${message.username} ';">Ответить</a>
         `;
         messageContainer.appendChild(msgElement);
-        messageContainer.scrollTop = messageContainer.scrollHeight; // Прокрутка вниз
+        messageContainer.scrollTop = messageContainer.scrollHeight;
     }
 
-    // Обновление сообщений каждые 10 секунд
     setInterval(loadMessages, 10000);
 </script>
 
