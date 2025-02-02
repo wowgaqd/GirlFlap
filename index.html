@@ -164,7 +164,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
 
-        .btn.original { 
+        .btn.save { 
             background: linear-gradient(45deg, #4a4a4a, #1c1c1c); 
         }
 
@@ -215,12 +215,6 @@
             opacity: 0.8;
         }
 
-        .bot-card h3 {
-            margin: 10px 0;
-            font-size: 1.5em;
-            color: #ffffff; /* Изменено на белый цвет */
-        }        
-
         .loader div {
             width: 50px;
             height: 50px;
@@ -233,6 +227,70 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Стили для модального окна */
+        .modal {
+            display: none; /* Скрыто по умолчанию */
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background-color: #121212;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #ff4081;
+            width: 300px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .close-button {
+            color: #ffffff;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: #ff4081;
+        }
+
+        input[type="text"] {
+            width: 90%;
+            padding: 10px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+
+        /* Блок для отображения NickName */
+        #nicknameDisplay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(30, 30, 30, 0.9);
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 5px;
+            display: none; /* Изначально скрыт */
+        }
+
+        /* Стили для сообщения об ошибке */
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            display: none; /* Изначально скрыто */
         }
     </style>
 </head>
@@ -251,7 +309,7 @@
     <a href="profile" class="top-button fade-in">
         <img src="images/myprofile.png" alt="Профиль">
     </a>
-    <a href="chat" class="top-button fade-in">
+    <a href="#" class="top-button fade-in" id="chatButton">
         <img src="images/chat.png" alt="Чат">
     </a>
 </div>
@@ -282,11 +340,32 @@
     <p style="margin: 0;">&copy; 2025 GirlFlap - все права защищены</p>
 </footer>
 
+<!-- Модальное окно для ввода NickName -->
+<div class="modal" id="nicknameModal">
+    <div class="modal-content">
+        <span class="close-button" id="closeModal">&times;</span>
+        <h2>Введите ваш NickName</h2>
+        <input type="text" id="nicknameInput" placeholder="Ваш NickName" />
+        <span class="error-message" id="errorMessage">Никнейм не должен превышать 10 символов.</span>
+        <button id="saveNickname" class="btn save">Сохранить</button>
+    </div>
+</div>
+
+<!-- Блок для отображения NickName -->
+<div id="nicknameDisplay">NickName: <span id="nicknameText"></span></div>
+
 <script>
     window.onload = function() {
         const loader = document.querySelector('.loader');
         loader.style.display = 'none';
-        
+
+        // Проверка и отображение сохраненного NickName
+        const nickname = localStorage.getItem('nickname');
+        if (nickname) {
+            document.getElementById('nicknameText').innerText = nickname;
+            document.getElementById('nicknameDisplay').style.display = 'block';
+        }
+
         const fadeIns = document.querySelectorAll('.fade-in, .fade-in-from-bottom');
         fadeIns.forEach((el) => {
             const observer = new IntersectionObserver((entries) => {
@@ -301,7 +380,54 @@
             observer.observe(el);
         });
     };
+
+    document.getElementById('chatButton').addEventListener('click', function() {
+        const nickname = localStorage.getItem('nickname');
+        if (nickname) {
+            // Переход в чат с использованием установленного ника
+            const chatUrl = `chat.html?nickname=${encodeURIComponent(nickname)}`;
+            window.location.href = chatUrl;
+        } else {
+            // Открыть модальное окно для ввода ника
+            document.getElementById('nicknameModal').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none'; // Скрыть сообщение об ошибке
+        }
+    });
+
+    document.getElementById('closeModal').addEventListener('click', function() {
+        document.getElementById('nicknameModal').style.display = 'none';
+    });
+
+    document.getElementById('saveNickname').addEventListener('click', function() {
+        const nickname = document.getElementById('nicknameInput').value;
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Проверка длины NickName
+        if (nickname.length > 10) {
+            errorMessage.style.display = 'block'; // Показать сообщение об ошибке
+        } else {
+            // Сохранение NickName в localStorage
+            localStorage.setItem('nickname', nickname);
+            // Отображаем NickName
+            document.getElementById('nicknameText').innerText = nickname;
+            document.getElementById('nicknameDisplay').style.display = 'block';
+            document.getElementById('nicknameModal').style.display = 'none';
+            errorMessage.style.display = 'none'; // Скрыть сообщение об ошибке
+            // Переход в чат
+            const chatUrl = `chat.html?nickname=${encodeURIComponent(nickname)}`;
+            window.location.href = chatUrl;
+        }
+    });
+
+    // Закрытие модального окна при нажатии вне его содержимого
+    window.onclick = function(event) {
+        const modal = document.getElementById('nicknameModal');
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
 </script>
 
 </body>
 </html>
+
