@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Меню сайта</title>
     <style>
-        /* Ваши стили остаются без изменений */
         body {
             margin: 0;
             padding: 0;
@@ -25,7 +24,7 @@
             padding: 10px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
             width: 90%;
-            max-width: 320px;
+            max-width: 300px;
             height: 65%;
             display: flex;
             flex-direction: column;
@@ -193,6 +192,7 @@
         }
 
         .avatar {
+            cursor: pointer;
             position: absolute;
             top: 10px;
             right: 10px;
@@ -200,7 +200,6 @@
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
-            cursor: pointer;
             box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
         }
 
@@ -216,8 +215,8 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             z-index: 1000;
             text-align: center;
-            width: 400px;
-            max-width: 90%; /* Адаптивность для мобильных устройств */
+            width: 350px; /* Уменьшено для мобильных устройств */
+            max-width: 90%;
         }
 
         .avatar-modal img {
@@ -231,7 +230,7 @@
         .avatar-modal .user-tag {
             color: #ff69b4;
             font-size: 16px;
-            margin: 0 0 10px 0;
+            margin: 10px 0;
             text-align: center; 
         }
 
@@ -246,17 +245,16 @@
             z-index: 999;
         }
 
-        /* Медиа-запросы для мобильных устройств */
-        @media (max-width: 480px) {
-            .avatar-modal {
-                width: 80%; /* Уменьшаем ширину модального окна на мобильных */
-                padding: 10px;
-            }
-            
-            .avatar-modal img {
-                width: 50px; /* Уменьшаем размеры изображения аватара */
-                height: 50px;
-            }
+        .choose-avatar-text {
+            color: #ff69b4;
+            margin: 10px 0;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        #close-modal-button {
+            width: 100px; /* Увеличена ширина кнопки */
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -282,14 +280,13 @@
 
 <div class="modal-overlay" id="modal-overlay"></div>
 <div class="avatar-modal" id="avatar-modal">
-    <img id="new-avatar-preview" src="https://i.postimg.cc/VdXdtdvR/user.png" alt="Новая Аватарка" style="margin-bottom: 5px;">
+    <div class="choose-avatar-text">Выбрать аватарку</div>
+    <img id="new-avatar-preview" src="https://i.postimg.cc/VdXdtdvR/user.png" alt="Новая Аватарка">
     <div class="user-tag" id="user-tag"></div>
     
-    <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+    <input type="file" id="avatar-input" accept="image/*" style="display: none;" />
     <input type="file" id="video-input" accept="video/*" style="display: none;" />
-    <button id="close-modal-button" style="margin-top: 20px;">Закрыть</button>
-    <button id="photo-button" style="margin-top: 5px;">Выбрать Фото</button>
-    <button id="video-button" style="margin-top: 5px; display: none;">Выбрать Видео</button>
+    <button id="close-modal-button">Закрыть</button>
 </div>
 
 <script>
@@ -305,21 +302,14 @@
     const newAvatarPreview = document.getElementById('new-avatar-preview');
     const closeModalButton = document.getElementById('close-modal-button');
     const userTagDisplay = document.getElementById('user-tag');
-    const photoButton = document.getElementById('photo-button');
-    const videoButton = document.getElementById('video-button');
+    const chooseAvatarText = document.querySelector('.choose-avatar-text');
 
-    // Загрузка ника и пользовательских данных из localStorage
-    const nickname = localStorage.getItem('nickname');
+    const nickname = localStorage.getItem('nickname') || 'Без имени';
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     const adminKey = "GirlAdmin-R5QRbNZsQSSgLRjqNGfK9";
-    userTagDisplay.innerHTML = `${nickname || 'GirlFlap'} <span class="${isAdmin ? 'admin-tag' : 'guest-tag'}">${isAdmin ? 'Администратор' : 'Гость'}</span>`;
-    nicknameDisplay.innerText = nickname ? nickname : 'Без имени';
 
-    if (nickname) {
-        document.getElementById('nicknameDisplay').style.display = 'block';
-    } else {
-        document.getElementById('nicknameDisplay').style.display = 'none'; 
-    }
+    userTagDisplay.innerHTML = `${nickname} <span class="${isAdmin ? 'admin-tag' : 'guest-tag'}">${isAdmin ? 'Администратор' : 'Гость'}</span>`;
+    nicknameDisplay.innerText = nickname;
 
     let userID = localStorage.getItem('userID');
     if (userID === null) {
@@ -327,17 +317,17 @@
         localStorage.setItem('userID', userID);
     }
 
+    loadAvatar();
     loadMessages();
 
     sendButton.addEventListener('click', sendMessage);
     avatar.addEventListener('click', openAvatarModal);
+    chooseAvatarText.addEventListener('click', openAvatarSelection);
+    closeModalButton.addEventListener('click', closeAvatarModal);
+    
     avatarInput.addEventListener('change', previewAvatar);
     videoInput.addEventListener('change', previewVideo);
-    closeModalButton.addEventListener('click', closeAvatarModal);
-    modalOverlay.addEventListener('click', closeAvatarModal);
-    photoButton.addEventListener('click', () => avatarInput.click());
-    videoButton.addEventListener('click', () => videoInput.click());
-
+  
     function escapeHTML(html) {
         const div = document.createElement('div');
         div.innerText = html;
@@ -374,7 +364,7 @@
 
         if (messageText) {
             const message = {
-                username: `${nickname || 'GirlFlap'} [${userID}]`,
+                username: `${nickname} [${userID}]`,
                 text: escapeHTML(messageText),
                 date: formattedDate,
                 time: formattedTime,
@@ -401,8 +391,7 @@
 
     function displayMessage(message) {
         const msgElement = document.createElement('div');
-        msgElement.classList.add('message');
-        msgElement.classList.add(message.tag === "Администратор" ? 'admin' : 'guest');
+        msgElement.classList.add('message', message.tag === "Администратор" ? 'admin' : 'guest');
 
         const tagElement = message.tag === "Администратор" 
             ? '<span class="admin-tag">Администратор</span>' 
@@ -421,12 +410,13 @@
     function openAvatarModal() {
         modalOverlay.style.display = 'block';
         avatarModal.style.display = 'block';
-        loadAvatar(); // загрузка текущего аватара при открытии модального окна
+        loadAvatar();
+    }
 
+    function openAvatarSelection() {
+        avatarInput.click();
         if (isAdmin) {
-            videoButton.style.display = 'inline-block'; // показываем кнопку выбора видео для администраторов
-        } else {
-            videoButton.style.display = 'none'; // скрываем кнопку для обычных пользователей
+            videoInput.click();
         }
     }
 
@@ -452,9 +442,9 @@
         const file = videoInput.files[0];
         if (file) {
             const videoURL = URL.createObjectURL(file);
-            avatar.src = videoURL; // показываем видео в качестве аватара
+            avatar.src = videoURL;
             localStorage.setItem('avatar', videoURL);
-            videoInput.value = ''; // очищаем поле после выбора
+            videoInput.value = '';
         }
     }
 
@@ -465,8 +455,6 @@
             newAvatarPreview.src = savedAvatar;
         }
     }
-
-    loadAvatar(); 
 
     setInterval(loadMessages, 10000);
 </script>
