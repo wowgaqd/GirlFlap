@@ -199,6 +199,11 @@
             .bot-card h3 { font-size: 1.2em; }
             .btn { font-size: 0.9em; }
             .top-button img { width: 80px; }
+            #nicknameDisplay {
+                font-size: 0.9em;
+                padding: 5px;
+                background-color: rgba(30, 30, 30, 0.9);
+            }
         }
 
         .loader {
@@ -282,6 +287,7 @@
             padding: 10px;
             border-radius: 5px;
             display: none; /* Изначально скрыт */
+            cursor: pointer; /* Добавлено для указания на кликабельность */
         }
 
         /* Стили для сообщения об ошибке */
@@ -295,6 +301,10 @@
             color: red;
             font-size: 0.9em;
             display: none; /* Изначально скрыто */
+        }
+
+        .reset-nickname {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -359,7 +369,19 @@
 <!-- Блок для отображения NickName -->
 <div id="nicknameDisplay">NickName: <span id="nicknameText"></span></div>
 
+<!-- Модальное окно для сброса NickName -->
+<div class="modal" id="resetModal">
+    <div class="modal-content">
+        <span class="close-button" id="closeResetModal">&times;</span>
+        <h2>Сбросить NickName?</h2>
+        <p>Вы уверены, что хотите сбросить ваш NickName?</p>
+        <button id="confirmReset" class="btn save reset-nickname">Сбросить</button>
+    </div>
+</div>
+
 <script>
+    let nicknameSet = false; // Флаг для отслеживания, установлен ли ник
+
     window.onload = function() {
         const loader = document.querySelector('.loader');
         loader.style.display = 'none';
@@ -406,14 +428,20 @@
         const nicknameInput = document.getElementById('nicknameInput').value.trim();
         const errorMessage = document.getElementById('errorMessage');
         const nicknameError = document.getElementById('nicknameError');
-        
-        // Проверка длины NickName и на запрещенный ник
+
+        // Проверка длины NickName
         if (nicknameInput.length > 10) {
             errorMessage.style.display = 'block'; // Показать сообщение об ошибке
             nicknameError.style.display = 'none'; // Скрыть сообщение о запрещенном ника
-        } else if (nicknameInput === 'DreamGirl') {
-            errorMessage.style.display = 'none'; // Скрыть сообщение об ошибке
-            nicknameError.style.display = 'block'; // Показать сообщение о запрещенном ника
+        } else if (nicknameInput === 'GirlAdmin-R5QRbNZsQSSgLRjqNGfK9' && !nicknameSet) {
+            localStorage.setItem('nickname', nicknameInput);
+            document.getElementById('nicknameText').innerText = nicknameInput;
+            document.getElementById('nicknameDisplay').style.display = 'block';
+            nicknameSet = true; // Установить флаг, что ник был установлен
+            document.getElementById('nicknameModal').style.display = 'none';
+        } else if (nicknameInput === 'GirlAdmin-R5QRbNZsQSSgLRjqNGfK9' && nicknameSet) {
+            errorMessage.style.display = 'none';
+            nicknameError.style.display = 'block'; // Показать сообщение, что ник уже использован
         } else {
             const existingNickname = localStorage.getItem('nickname');
             if (existingNickname === nicknameInput) {
@@ -426,17 +454,36 @@
                 document.getElementById('nicknameModal').style.display = 'none';
                 errorMessage.style.display = 'none'; // Скрыть сообщение об ошибке
                 nicknameError.style.display = 'none'; // Скрыть сообщение о запрещенном ника
-                const chatUrl = `chat.html?nickname=${encodeURIComponent(nicknameInput)}`;
-                window.location.href = chatUrl;
             }
         }
     });
 
+    document.getElementById('nicknameDisplay').addEventListener('click', function() {
+        document.getElementById('resetModal').style.display = 'block';
+    });
+
+    document.getElementById('closeResetModal').addEventListener('click', function() {
+        document.getElementById('resetModal').style.display = 'none';
+    });
+
+    document.getElementById('confirmReset').addEventListener('click', function() {
+        localStorage.removeItem('nickname');
+        document.getElementById('nicknameDisplay').style.display = 'none';
+        document.getElementById('resetModal').style.display = 'none';
+        nicknameSet = false; // Сбросить флаг, чтобы ник мог быть установлен снова
+    });
+
     // Закрытие модального окна при нажатии вне его содержимого
     window.onclick = function(event) {
-        const modal = document.getElementById('nicknameModal');
-        if (event.target === modal) {
-            modal.style.display = "none";
+        const nicknameModal = document.getElementById('nicknameModal');
+        const resetModal = document.getElementById('resetModal');
+
+        if (event.target === nicknameModal) {
+            nicknameModal.style.display = "none";
+        }
+
+        if (event.target === resetModal) {
+            resetModal.style.display = "none";
         }
     };
 </script>
