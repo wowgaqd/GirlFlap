@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Меню сайта</title>
     <style>
+        /* Ваши стили остаются без изменений */
         body {
             margin: 0;
             padding: 0;
@@ -217,6 +218,7 @@
             z-index: 1000;
             text-align: center;
             width: 400px;
+            max-width: 90%; /* Адаптивность для мобильных устройств */
         }
 
         .avatar-modal img {
@@ -244,6 +246,19 @@
             background: rgba(0, 0, 0, 0.7);
             z-index: 999;
         }
+
+        /* Медиа-запросы для мобильных устройств */
+        @media (max-width: 480px) {
+            .avatar-modal {
+                width: 80%; /* Уменьшаем ширину модального окна на мобильных */
+                padding: 10px;
+            }
+            
+            .avatar-modal img {
+                width: 50px; /* Уменьшаем размеры изображения аватара */
+                height: 50px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -270,6 +285,7 @@
 <div class="avatar-modal" id="avatar-modal">
     <img id="new-avatar-preview" src="https://i.postimg.cc/VdXdtdvR/user.png" alt="Новая Аватарка" style="margin-bottom: 5px;">
     <div class="user-tag" id="user-tag"></div>
+    
     <input type="file" id="avatar-input" accept="image/*" style="display: none;">
     <button id="close-modal-button" style="margin-top: 20px;">Закрыть</button>
 </div>
@@ -287,6 +303,7 @@
     const closeModalButton = document.getElementById('close-modal-button');
     const userTagDisplay = document.getElementById('user-tag');
 
+    // Загрузка ника и пользовательских данных из localStorage
     const nickname = localStorage.getItem('nickname');
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     const adminKey = "GirlAdmin-R5QRbNZsQSSgLRjqNGfK9";
@@ -300,7 +317,6 @@
     }
 
     let userID = localStorage.getItem('userID');
-
     if (userID === null) {
         userID = Math.floor(Math.random() * 1001);
         localStorage.setItem('userID', userID);
@@ -397,7 +413,7 @@
     function openAvatarModal() {
         modalOverlay.style.display = 'block';
         avatarModal.style.display = 'block';
-        avatarInput.click(); // автоматически открываем диалог выбора файла
+        loadAvatar(); // загрузка текущего аватара при открытии модального окна
     }
 
     function closeAvatarModal() {
