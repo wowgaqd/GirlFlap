@@ -229,7 +229,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Стили для модального окна */
         .modal {
             display: none; /* Скрыто по умолчанию */
             position: fixed;
@@ -274,7 +273,6 @@
             color: #ffffff;
         }
 
-        /* Блок для отображения NickName */
         #nicknameDisplay {
             position: absolute;
             top: 10px;
@@ -288,6 +286,12 @@
 
         /* Стили для сообщения об ошибке */
         .error-message {
+            color: red;
+            font-size: 0.9em;
+            display: none; /* Изначально скрыто */
+        }
+
+        .nickname-error {
             color: red;
             font-size: 0.9em;
             display: none; /* Изначально скрыто */
@@ -347,6 +351,7 @@
         <h2>Введите ваш NickName</h2>
         <input type="text" id="nicknameInput" placeholder="Ваш NickName" />
         <span class="error-message" id="errorMessage">Никнейм не должен превышать 10 символов.</span>
+        <span class="nickname-error" id="nicknameError">К сожалению, данный ник является запрещен для пользователей.</span>
         <button id="saveNickname" class="btn save">Сохранить</button>
     </div>
 </div>
@@ -384,13 +389,12 @@
     document.getElementById('chatButton').addEventListener('click', function() {
         const nickname = localStorage.getItem('nickname');
         if (nickname) {
-            // Переход в чат с использованием установленного ника
             const chatUrl = `chat.html?nickname=${encodeURIComponent(nickname)}`;
             window.location.href = chatUrl;
         } else {
-            // Открыть модальное окно для ввода ника
             document.getElementById('nicknameModal').style.display = 'block';
             document.getElementById('errorMessage').style.display = 'none'; // Скрыть сообщение об ошибке
+            document.getElementById('nicknameError').style.display = 'none'; // Скрыть сообщение о запрещенном ника
         }
     });
 
@@ -399,23 +403,32 @@
     });
 
     document.getElementById('saveNickname').addEventListener('click', function() {
-        const nickname = document.getElementById('nicknameInput').value;
+        const nicknameInput = document.getElementById('nicknameInput').value.trim();
         const errorMessage = document.getElementById('errorMessage');
-
-        // Проверка длины NickName
-        if (nickname.length > 10) {
+        const nicknameError = document.getElementById('nicknameError');
+        
+        // Проверка длины NickName и на запрещенный ник
+        if (nicknameInput.length > 10) {
             errorMessage.style.display = 'block'; // Показать сообщение об ошибке
-        } else {
-            // Сохранение NickName в localStorage
-            localStorage.setItem('nickname', nickname);
-            // Отображаем NickName
-            document.getElementById('nicknameText').innerText = nickname;
-            document.getElementById('nicknameDisplay').style.display = 'block';
-            document.getElementById('nicknameModal').style.display = 'none';
+            nicknameError.style.display = 'none'; // Скрыть сообщение о запрещенном ника
+        } else if (nicknameInput === 'DreamGirl') {
             errorMessage.style.display = 'none'; // Скрыть сообщение об ошибке
-            // Переход в чат
-            const chatUrl = `chat.html?nickname=${encodeURIComponent(nickname)}`;
-            window.location.href = chatUrl;
+            nicknameError.style.display = 'block'; // Показать сообщение о запрещенном ника
+        } else {
+            const existingNickname = localStorage.getItem('nickname');
+            if (existingNickname === nicknameInput) {
+                errorMessage.style.display = 'none';
+                nicknameError.style.display = 'block'; // Показать сообщение о запрещенном ника
+            } else {
+                localStorage.setItem('nickname', nicknameInput);
+                document.getElementById('nicknameText').innerText = nicknameInput;
+                document.getElementById('nicknameDisplay').style.display = 'block';
+                document.getElementById('nicknameModal').style.display = 'none';
+                errorMessage.style.display = 'none'; // Скрыть сообщение об ошибке
+                nicknameError.style.display = 'none'; // Скрыть сообщение о запрещенном ника
+                const chatUrl = `chat.html?nickname=${encodeURIComponent(nicknameInput)}`;
+                window.location.href = chatUrl;
+            }
         }
     });
 
@@ -430,4 +443,3 @@
 
 </body>
 </html>
-
