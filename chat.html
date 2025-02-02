@@ -38,9 +38,15 @@
 
         .header h1 {
             font-size: 24px;
-            color: #ff69b4; /* Цвет заголовка */
+            color: #ff69b4;
             margin: 0;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        #nicknameDisplay {
+            color: #ffffff;
+            margin-top: 5px;
+            font-size: 14px;
         }
 
         .content {
@@ -50,41 +56,35 @@
             border-radius: 8px;
             background-color: rgba(50, 50, 50, 0.8);
             margin-bottom: 8px;
-            padding-bottom: 50px;
-
-            scrollbar-width: thin;
-            scrollbar-color: #555 #444;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
         }
 
         .content::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
 
         .content::-webkit-scrollbar-track {
-            background: #444;
+            background: rgba(80, 80, 80, 0.8);
             border-radius: 8px;
         }
 
         .content::-webkit-scrollbar-thumb {
-            background-color: #555;
+            background-color: rgba(255, 105, 180, 0.9);
             border-radius: 8px;
         }
 
         .content::-webkit-scrollbar-thumb:hover {
-            background: #777;
+            background: rgba(255, 20, 147, 0.9);
         }
 
         .input-area {
             display: flex;
             align-items: center;
-            border: 1px solid rgba(128, 128, 128, 0.5);
-            padding: 8px;
             border-radius: 10px;
             background-color: rgba(50, 50, 50, 0.8);
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            right: 10px;
+            position: relative;
+            padding: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
         input[type="text"] {
@@ -118,15 +118,7 @@
             background: linear-gradient(45deg, #a05cb3, #ff00ff);
         }
 
-        @media (max-width: 600px) {
-            .menu {
-                width: 95%;
-                max-width: 90%;
-            }
-        }
-
         .message {
-            background: linear-gradient(135deg, #4e4e4e 30%, #3a3a3a 100%);
             border-radius: 8px;
             padding: 6px 10px;
             margin-bottom: 10px;
@@ -135,9 +127,32 @@
             position: relative;
             font-family: 'Arial', sans-serif;
             max-width: calc(100% - 20px);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+        }
+
+        .message.guest {
+            background: linear-gradient(135deg, #4e4e4e 30%, #3a3a3a 100%);
+        }
+
+        .message.admin {
+            background: linear-gradient(135deg, #8B0000, #4B0000);
+        }
+
+        .admin-tag {
+            background-color: rgba(255, 105, 180, 0.8);
+            color: #ffffff;
+            border-radius: 7.5px;
+            padding: 2px 5px;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+
+        .guest-tag {
+            background-color: rgba(128, 128, 128, 0.8);
+            color: #ffffff;
+            border-radius: 7.5px;
+            padding: 2px 5px;
+            font-size: 10px;
+            margin-left: 5px;
         }
 
         .message b {
@@ -165,15 +180,7 @@
             position: absolute;
             bottom: 8px;
             right: 8px;
-        }
-
-        .guest-tag {
-            background-color: rgba(128, 128, 128, 0.5);
-            color: #ffffff;
-            border-radius: 7.5px;
-            padding: 2px 5px;
-            font-size: 10px;
-            margin-left: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -182,6 +189,7 @@
 <div class="menu" id="menu">
     <div class="header">
         <h1>GirlFlap</h1>
+        <div id="nicknameDisplay">NickName: <span id="nicknameText"></span></div>
     </div>
     <div class="content" id="message-container">
         <!-- Сообщения будут отображаться здесь -->
@@ -197,11 +205,28 @@
     const sendButton = document.getElementById('send-button');
     const messageInput = document.getElementById('message-input');
     const messageContainer = document.getElementById('message-container');
+    const nicknameDisplay = document.getElementById('nicknameText');
+    
+    const nickname = localStorage.getItem('nickname');
+    if (nickname) {
+        nicknameDisplay.innerText = nickname;
+        document.getElementById('nicknameDisplay').style.display = 'block';
+    } else {
+        document.getElementById('nicknameDisplay').style.display = 'none'; // Скрыть, если нет никнейма
+    }
+
+    const adminKey = "GirlAdmin-R5QRbNZsQSSgLRjqNGfK9";
+    const guestKey = "Guest-dCEuXNbUOPavsEBMadaeoKQUu";
 
     let userID = localStorage.getItem('userID');
+    let isAdmin = localStorage.getItem('isAdmin') === 'true';
+    let userTag = isAdmin ? "Администратор" : "Гость";
+
     if (userID === null) {
         userID = Math.floor(Math.random() * 1001);
         localStorage.setItem('userID', userID);
+    } else {
+        userTag = isAdmin ? "Администратор" : "Гость";
     }
 
     loadMessages();
@@ -214,19 +239,50 @@
         }
     });
 
+    function escapeHTML(html) {
+        const div = document.createElement('div');
+        div.innerText = html;
+        return div.innerHTML;
+    }
+
     function sendMessage() {
         const messageText = messageInput.value.trim();
-        const username = `GirlFlap[${userID}]`;
         const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' });
         const formattedTime = currentDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
+        if (messageText.startsWith('/clear ')) {
+            const inputKey = messageText.replace('/clear ', '').trim();
+            if (inputKey === adminKey) {
+                localStorage.removeItem('messages');
+                loadMessages();
+                messageInput.value = ''; 
+                return;
+            }
+        }
+
+        if (messageText.startsWith('/setadmin ')) {
+            const inputKey = messageText.replace('/setadmin ', '').trim();
+            if (inputKey === adminKey) {
+                isAdmin = true;
+                userTag = "Администратор";
+                localStorage.setItem('isAdmin', isAdmin);
+            } else if (inputKey === guestKey) {
+                userTag = "Гость";
+                isAdmin = false;
+                localStorage.setItem('isAdmin', isAdmin);
+            }
+            messageInput.value = '';
+            return;
+        }
+
         if (messageText) {
             const message = {
-                username: username,
-                text: messageText,
+                username: `${nickname || 'GirlFlap'} [${userID}]`, // Использование никнейма или запасного имени
+                text: escapeHTML(messageText),
                 date: formattedDate,
-                time: formattedTime
+                time: formattedTime,
+                tag: userTag
             };
 
             saveMessage(message);
@@ -250,11 +306,17 @@
     function displayMessage(message) {
         const msgElement = document.createElement('div');
         msgElement.classList.add('message');
+        msgElement.classList.add(message.tag === "Администратор" ? 'admin' : 'guest');
+
+        const tagElement = message.tag === "Администратор" 
+            ? '<span class="admin-tag">Администратор</span>' 
+            : '<span class="guest-tag">Гость</span>';
+
         msgElement.innerHTML = `
-            <b>${message.username}<span class="guest-tag">Гость</span></b>
+            <b>${message.username}${tagElement}</b>
             <p>${message.text}</p>
             <span class="timestamp">${message.date}, ${message.time}</span>
-            <a href="#reply" class="reply-button" onclick="document.getElementById('message-input').value = '@${message.username} ';">Ответить</a>
+            <a href="#reply" class="reply-button" onclick="document.getElementById('message-input').value = '@${message.username} ';"><strong>Ответить</strong></a>
         `;
         messageContainer.appendChild(msgElement);
         messageContainer.scrollTop = messageContainer.scrollHeight;
@@ -265,3 +327,4 @@
 
 </body>
 </html>
+
