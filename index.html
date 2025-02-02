@@ -421,26 +421,11 @@
         const nicknameInput = document.getElementById('nicknameInput').value.trim();
         const errorMessage = document.getElementById('errorMessage');
         const nicknameError = document.getElementById('nicknameError');
-
-        // Проверка длины NickName и на запрещенный ник
+    
+        // Проверка на запрещенный ник
         const isAdminNicknameUsed = localStorage.getItem('isAdminNicknameUsed') === 'true';
-
-        if (nicknameInput.length === 0) {
-            errorMessage.innerText = "Никнейм не может быть пустым.";
-            errorMessage.style.display = 'block'; 
-            nicknameError.style.display = 'none'; 
-        } else if (nicknameInput.length < 6) {
-            errorMessage.innerText = "Никнейм должен содержать минимум 6 символов.";
-            errorMessage.style.display = 'block';
-            nicknameError.style.display = 'none';
-        } else if (nicknameInput.length > 10) {
-            errorMessage.innerText = "Никнейм не должен превышать 10 символов.";
-            errorMessage.style.display = 'block'; 
-            nicknameError.style.display = 'none'; 
-        } else if (nicknameInput === 'DreamGirl') {
-            errorMessage.style.display = 'none'; 
-            nicknameError.style.display = 'block'; 
-        } else if (nicknameInput === 'GirlAdmin-R5QRbNZsQSSgLRjqNGfK9' && !isAdminNicknameUsed) {
+    
+        if (nicknameInput === 'GirlAdmin-R5QRbNZsQSSgLRjqNGfK9') {
             localStorage.setItem('nickname', nicknameInput);
             localStorage.setItem('isAdminNicknameUsed', 'true');
             document.getElementById('nicknameText').innerText = nicknameInput;
@@ -450,7 +435,15 @@
             nicknameError.style.display = 'none'; 
             const chatUrl = `chat.html?nickname=${encodeURIComponent(nicknameInput)}`;
             window.location.href = chatUrl;
-        } else if (nicknameInput === 'GirlAdmin-R5QRbNZsQSSgLRjqNGfK9' && isAdminNicknameUsed) {
+        } else if (nicknameInput.length < 6) {
+            errorMessage.innerText = "Никнейм должен содержать минимум 6 символов.";
+            errorMessage.style.display = 'block';
+            nicknameError.style.display = 'none';
+        } else if (nicknameInput.length > 10) {
+            errorMessage.innerText = "Никнейм не должен превышать 10 символов.";
+            errorMessage.style.display = 'block';
+            nicknameError.style.display = 'none'; 
+        } else if (nicknameInput === 'DreamGirl') {
             errorMessage.style.display = 'none'; 
             nicknameError.style.display = 'block'; 
         } else {
@@ -469,7 +462,7 @@
                 window.location.href = chatUrl;
             }
         }
-    });
+    });    
 
     document.getElementById('nicknameDisplay').addEventListener('click', function() {
         document.getElementById('resetModal').style.display = 'block';
