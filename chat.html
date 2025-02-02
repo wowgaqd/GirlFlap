@@ -256,6 +256,39 @@
             width: 100px; /* Увеличена ширина кнопки */
             margin-top: 20px;
         }
+
+        @media (max-width: 480px) {
+            .menu {
+                max-width: 90%; /* Уменьшаем ширину меню для мобильных устройств */
+                height: 80%; /* Увеличиваем высоту для мобильных устройств */
+            }
+
+            .avatar {
+                width: 30px; /* Уменьшаем размер аватарки на мобильных */
+                height: 30px;
+            }
+
+            .avatar-modal {
+                width: 80%; /* Увеличиваем размер модального окна для выбора аватара */
+                max-width: 350px; /* Ограничиваем максимальную ширину */
+            }
+
+            .header h1 {
+                font-size: 20px; /* Меньший размер шрифта для заголовка */
+            }
+
+            #nicknameDisplay {
+                font-size: 12px; /* Меньший размер шрифта для ника */
+            }
+
+            button {
+                font-size: 12px; /* Уменьшаем размер шрифта на кнопках */
+            }
+
+            .choose-avatar-text {
+                font-size: 12px; /* Меньший размер шрифта для текста выбора аватара */
+            }
+        }
     </style>
 </head>
 <body>
@@ -417,6 +450,11 @@
         avatarInput.click();
         if (isAdmin) {
             videoInput.click();
+            videoInput.onchange = function() {
+                if (videoInput.files.length > 0) {
+                    previewVideo();
+                }
+            };
         }
     }
 
