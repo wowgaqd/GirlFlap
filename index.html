@@ -3,482 +3,441 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>GirlFlap</title>
+    <title>Меню сайта</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #121212;
-            color: #ffffff;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            animation: fadeIn 0.5s ease-in-out;
             height: 100vh;
-            scroll-behavior: smooth;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .fade-in-from-bottom {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-        }
-
-        .fade-in-from-bottom.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        ::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #1e1e1e;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #ff4081;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ff007f;
-        }
-
-        header {
-            background: linear-gradient(to right, #ff4081, #ffab40);
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        header img {
-            max-width: 120px;
-            filter: brightness(0) invert(1);
-        }
-
-        h1 {
-            font-size: 2em;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .top-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .top-button img {
-            width: 100px;
-            height: auto;
-            border-radius: 10px;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .top-button img:hover {
-            transform: scale(1.1);
-            opacity: 0.9;
-        }
-
-        .bot-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            margin-bottom: 100px;
-            justify-items: center;
-            box-sizing: border-box;
-        }
-
-        .bot-card {
-            padding: 15px;
-            max-width: 300px;
-            width: 100%;
-            height: 350px;
-            border-radius: 15px;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
-            text-align: center;
-            background-image: linear-gradient(rgba(30, 30, 30, 0.8), rgba(30, 30, 30, 0.8)), url('path/to/texture.png');
-            background-size: cover;
-            animation: shake 2s infinite;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        @keyframes shake {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0); }
-        }
-
-        .bot-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 38px rgba(0, 0, 0, 0.9);
-        }
-
-        .bot-card img {
-            width: 100%;
-            border-radius: 10px;
-            max-height: 200px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .bot-card img:hover {
-            transform: scale(1.05);
-        }
-
-        .bot-card h3 {
-            margin: 10px 0;
-            font-size: 1.5em;
-            color: #ff4081;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 25px;
-            color: white;
-            text-decoration: none;
-            border-radius: 20px;
-            margin-top: 10px;
-            font-size: 1em;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;
-            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-            font-weight: 600;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-
-        .btn.save { 
-            background: linear-gradient(45deg, #4a4a4a, #1c1c1c); 
-        }
-
-        .snowflake {
-            position: fixed;
-            top: -10px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            opacity: 0;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(100vh); opacity: 0; }
-        }
-
-        .snowflake:nth-child(1) { width: 5px; height: 5px; left: 10%; animation-duration: 5s; }
-        .snowflake:nth-child(2) { width: 8px; height: 8px; left: 30%; animation-duration: 7s; }
-        .snowflake:nth-child(3) { width: 6px; height: 6px; left: 50%; animation-duration: 4s; }
-        .snowflake:nth-child(4) { width: 7px; height: 7px; left: 70%; animation-duration: 6s; }
-        .snowflake:nth-child(5) { width: 4px; height: 4px; left: 80%; animation-duration: 8s; }
-        .snowflake:nth-child(6) { width: 5px; height: 5px; left: 20%; animation-duration: 5s; }
-        .snowflake:nth-child(7) { width: 8px; height: 8px; left: 40%; animation-duration: 7s; }
-        .snowflake:nth-child(8) { width: 6px; height: 7px; left: 60%; animation-duration: 4s; }
-        .snowflake:nth-child(9) { width: 7px; height: 7px; left: 80%; animation-duration: 6s; }
-        .snowflake:nth-child(10) { width: 4px; height: 4px; left: 90%; animation-duration: 8s; }
-
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.3em; }
-            .top-buttons { flex-direction: row; margin: 10px; }
-            .bot-card h3 { font-size: 1.1em; }
-            .btn { font-size: 0.9em; }
-            .top-button img { width: 80px; }
-            #nicknameDisplay {
-                font-size: 0.8em; 
-                padding: 5px;
-                background-color: rgba(30, 30, 30, 0.8); 
-            }
-        }
-
-        .loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #121212;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
-            opacity: 0.8;
+            background: linear-gradient(to bottom right, #121212, #ffffff);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
         }
 
-        .loader div {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #ff4081;
-            border-top: 5px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 10000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-
-        .modal-content {
-            background-color: #121212;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #ff4081;
-            width: 300px;
+        .menu {
+            background-color: rgba(30, 30, 30, 0.9);
             border-radius: 10px;
-            text-align: center;
-        }
-
-        .close-button {
-            color: #ffffff;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close-button:hover {
-            color: #ff4081;
-        }
-
-        input[type="text"] {
-            width: 90%;
             padding: 10px;
-            margin-top: 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #1e1e1e;
-            color: #ffffff;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+            width: 95%; 
+            max-width: 350px; 
+            height: 60%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .menu.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #ff69b4;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         #nicknameDisplay {
+            color: #ffffff;
+            margin-top: 2px;
+            font-size: 14px;
+        }
+
+        .content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 8px;
+            border-radius: 8px;
+            background-color: rgba(50, 50, 50, 0.8);
+            margin-bottom: 8px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Custom Scrollbar Styles */
+        .content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: rgba(50, 50, 50, 0.6);
+            border-radius: 10px;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: #ff69b4;
+            border-radius: 10px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: #ff00ff;
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            background-color: rgba(50, 50, 50, 0.8);
+            position: relative;
+            padding: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            margin-right: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #800080, #dda0dd);
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #a05cb3, #ff00ff);
+        }
+
+        .message {
+            border-radius: 8px;
+            padding: 6px 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            word-wrap: break-word;
+            position: relative;
+            font-family: 'Arial', sans-serif;
+            max-width: calc(100% - 20px);
+        }
+
+        .message.guest {
+            background: linear-gradient(135deg, #4e4e4e 30%, #3a3a3a 100%);
+        }
+
+        .message.admin {
+            background: linear-gradient(135deg, #8B0000, #4B0000);
+        }
+
+        .message.owner {
+            background: linear-gradient(135deg, #ff69b4, #ff007f);
+        }
+
+        .admin-tag,
+        .guest-tag,
+        .owner-tag {
+            border-radius: 7.5px;
+            padding: 2px 5px;
+            font-size: 10px;
+            margin-left: 5px;
+            opacity: 0.9;
+        }
+
+        .admin-tag {
+            background-color: rgba(255, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .owner-tag {
+            background-color: rgba(255, 105, 180, 0.6);
+            color: #ffffff;
+        }
+
+        .guest-tag {
+            background-color: rgba(128, 128, 128, 0.8);
+            color: #ffffff;
+        }
+
+        .message b {
+            color: #e0e0e0;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .message p {
+            margin: 2px 0;
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        .timestamp {
+            font-size: 9px;
+            color: #bbb;
+            margin-top: 4px;
+            user-select: none;
+        }
+
+        .message .reply-button {
+            font-size: 9px;
+            color: #007bff;
+            text-decoration: none;
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        .avatar {
             position: absolute;
             top: 10px;
-            left: 10px;
-            background-color: rgba(30, 30, 30, 0.9);
-            color: #ffffff;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
             cursor: pointer;
+            box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
         }
 
-        .error-message {
-            color: red;
-            font-size: 0.9em;
+        .avatar-modal {
             display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(30, 30, 30, 0.9);
+            border-radius: 10px;
+            padding: 10px; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            text-align: center;
+            width: 80%; 
+            max-width: 300px; 
         }
 
-        .nickname-error {
-            color: red;
-            font-size: 0.9em;
+        .avatar-modal img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto; 
+            display: block; 
+            cursor: pointer; 
+        }        
+
+        .modal-overlay {
             display: none;
-        }
-
-        .reset-nickname {
-            margin-top: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
         }
     </style>
 </head>
 <body>
 
-<div class="loader">
-    <div></div>
-</div>
-
-<header class="fade-in">
-    <img src="images/logo.png" alt="Logo">
-    <h1>Добро пожаловать в GirlFlap!</h1>
-</header>
-
-<div class="top-buttons">
-    <a href="profile" class="top-button fade-in">
-        <img src="images/myprofile.png" alt="Профиль">
-    </a>
-    <a href="#" class="top-button fade-in" id="chatButton">
-        <img src="images/chat.png" alt="Чат">
-    </a>
-</div>
-
-<div class="snowflakes" aria-hidden="true">
-    <div class="snowflake"></div>
-    <div class="snowflake"></div>
-    <div class="snowflake"></div>
-    <div class="snowflake"></div>
-    <div class="snowflake"></div>
-    <div class="snowflake"></div>
-    <div class="snowflake"></div>
-    <div class="snowflake"></div>
-    <div class="snowflake"></div>
-    <div class="snowflake"></div>
-</div>
-
-<section class="bot-container">
-    <div class="bot-card fade-in-from-bottom">
-        <img src="images/GirlCard.png" alt="GirlFlap">
-        <h3>GirlFlap</h3>
-        <a href="https://t.me/CAPTURENETBOT?start=f63148d7-ee4b-4d11-ba61-d7a235be5c23" class="btn original">Перейти</a>
+<div class="menu" id="menu">
+    <img src="https://i.postimg.cc/VdXdtdvR/user.png" alt="Аватарка" class="avatar" id="avatar">
+    <div class="header">
+        <h1>GirlFlap</h1>
+        <div id="nicknameDisplay">
+            NickName: <span id="nicknameText"></span>
+        </div>
     </div>
-</section>
+    <div class="content" id="message-container">
+        <!-- Сообщения будут отображаться здесь -->
+    </div>
 
-<footer style="background-color: #1e1e1e; color: #ffffff; text-align: center; padding: 20px; position: relative; bottom: 0; width: 100%; box-sizing: border-box;">
-    <p style="margin: 0;">Сайт был разработан командой 'GirlFlap'</p>
-    <p style="margin: 0;">&copy; 2025 GirlFlap - все права защищены</p>
-</footer>
-
-<div class="modal" id="nicknameModal">
-    <div class="modal-content">
-        <span class="close-button" id="closeModal">&times;</span>
-        <h2>Введите ваш NickName</h2>
-        <input type="text" id="nicknameInput" placeholder="Ваш NickName" />
-        <span class="error-message" id="errorMessage">Никнейм не должен превышать 10 символов и должен содержать минимум 6 символов.</span>
-        <span class="nickname-error" id="nicknameError">К сожалению, данный ник является запрещенным для пользователей.</span>
-        <button id="saveNickname" class="btn save">Сохранить</button>
+    <div class="input-area">
+        <input type="text" id="message-input" placeholder="Введите сообщение...">
+        <button id="send-button">Отправить</button>
     </div>
 </div>
 
-<div id="nicknameDisplay">NickName: <span id="nicknameText"></span></div>
-
-<div class="modal" id="resetModal">
-    <div class="modal-content">
-        <span class="close-button" id="closeResetModal">&times;</span>
-        <h2>Сбросить NickName?</h2>
-        <button id="confirmReset" class="btn save reset-nickname">Сбросить</button>
-    </div>
+<div class="modal-overlay" id="modal-overlay"></div>
+<div class="avatar-modal" id="avatar-modal">
+    <img id="new-avatar-preview" src="https://i.postimg.cc/VdXdtdvR/user.png" alt="Новая Аватарка" style="margin-bottom: 5px;">
+    <div class="user-tag" id="user-tag"></div>
+    <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+    <button id="close-modal-button" style="margin-top: 20px;">Закрыть</button>
 </div>
 
 <script>
-    window.onload = function() {
-        const loader = document.querySelector('.loader');
-        loader.style.display = 'none';
+    const sendButton = document.getElementById('send-button');
+    const messageInput = document.getElementById('message-input');
+    const messageContainer = document.getElementById('message-container');
+    const nicknameDisplay = document.getElementById('nicknameText');
+    const avatar = document.getElementById('avatar');
+    const avatarModal = document.getElementById('avatar-modal');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const avatarInput = document.getElementById('avatar-input');
+    const newAvatarPreview = document.getElementById('new-avatar-preview');
+    const closeModalButton = document.getElementById('close-modal-button');
+    const userTagDisplay = document.getElementById('user-tag');
+    const menu = document.getElementById('menu');
 
-        const nickname = localStorage.getItem('nickname');
-        if (nickname) {
-            document.getElementById('nicknameText').innerText = nickname;
-            document.getElementById('nicknameDisplay').style.display = 'block';
+    const nickname = localStorage.getItem('nickname') || 'GirlFlap';
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    const adminTags = ['Гость', 'Мл. Модер', 'Ст. Модер', 'Мл. Админ', 'Администратор', 'Ст. Админ', 'Владелец'];
+
+    userTagDisplay.innerHTML = `${nickname} <span class="${nickname === 'DreamGirl' ? 'owner-tag' : isAdmin ? 'admin-tag' : 'guest-tag'}">${nickname === 'DreamGirl' ? 'Владелец' : adminTags[isAdmin ? 2 : 0]}</span>`;
+    nicknameDisplay.innerText = nickname;
+
+    let userID = localStorage.getItem('userID') || Math.floor(Math.random() * 1001);
+    localStorage.setItem('userID', userID);
+
+    loadMessages();
+    loadAvatar();
+    menu.classList.add('visible'); // Плавное открытие меню
+
+    avatar.addEventListener('click', () => {
+        modalOverlay.style.display = 'block';
+        avatarModal.style.display = 'block';
+    });
+
+    newAvatarPreview.addEventListener('click', () => {
+        avatarInput.click();
+    });
+
+    avatarInput.addEventListener('change', previewAvatar);
+    closeModalButton.addEventListener('click', closeAvatarModal);
+    modalOverlay.addEventListener('click', closeAvatarModal);
+    
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    function escapeHTML(html) {
+        const div = document.createElement('div');
+        div.innerText = html;
+        return div.innerHTML;
+    }
+
+    function sendMessage() {
+        const messageText = messageInput.value.trim();
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        const formattedTime = currentDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+        if (messageText.startsWith('/setadmin ')) {
+            const parts = messageText.split(' ');
+            if (parts.length === 3 && nickname === 'DreamGirl') {
+                const targetNickname = parts[1];
+                const newAdminLevel = Number(parts[2]);
+                if (newAdminLevel >= 1 && newAdminLevel <= 5) {
+                    localStorage.setItem(`adminLevel_${targetNickname}`, newAdminLevel);
+                    updateUserTag(targetNickname);
+                }
+            }
+            messageInput.value = '';
+            return;
         }
 
-        const fadeIns = document.querySelectorAll('.fade-in, .fade-in-from-bottom');
-        fadeIns.forEach((el) => {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    } else {
-                        entry.target.classList.remove('visible');
-                    }
-                });
-            });
-            observer.observe(el);
+        if (messageText) {
+            const message = {
+                username: `${nickname} [${userID}]`,
+                text: escapeHTML(messageText),
+                date: formattedDate,
+                time: formattedTime,
+                tag: isAdmin ? "Администратор" : "Гость"
+            };
+
+            saveMessage(message);
+            messageInput.value = '';
+            displayMessage(message);
+        }
+    }
+
+    function saveMessage(message) {
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messages.push(message);
+        localStorage.setItem('messages', JSON.stringify(messages));
+    }
+
+    function loadMessages() {
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messageContainer.innerHTML = '';
+        messages.forEach(displayMessage);
+    }
+
+    function displayMessage(message) {
+        const msgElement = document.createElement('div');
+        msgElement.classList.add('message', message.tag === "Администратор" ? 'admin' : 'guest');
+
+        const tagElement = (nickname === 'DreamGirl') 
+            ? '<span class="owner-tag">Владелец</span>' 
+            : `<span class="${isAdmin ? 'admin-tag' : 'guest-tag'}">${adminTags[isAdmin ? 2 : 0]}</span>`;
+
+        msgElement.innerHTML = `
+            <b>${message.username}${tagElement}</b>
+            <p>${message.text}</p>
+            <span class="timestamp">${message.date}, ${message.time}</span>
+            <a href="#reply" class="reply-button" onclick="document.getElementById('message-input').value = '@${message.username} '; return false;"><strong style="font-weight:bold;">Ответить</strong></a>
+        `;
+        messageContainer.appendChild(msgElement);
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+
+    function closeAvatarModal() {
+        modalOverlay.style.display = 'none';
+        avatarModal.style.display = 'none';
+    }
+
+    function previewAvatar() {
+        const file = avatarInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                newAvatarPreview.src = event.target.result;
+                avatar.src = event.target.result; 
+                localStorage.setItem('avatar', event.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function loadAvatar() {
+        const savedAvatar = localStorage.getItem('avatar') || 'https://i.postimg.cc/VdXdtdvR/user.png';
+        avatar.src = savedAvatar;
+        newAvatarPreview.src = savedAvatar;
+    }
+
+    function updateUserTag(targetNickname) {
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messages.forEach((message) => {
+            if (message.username.includes(targetNickname)) {
+                const level = localStorage.getItem(`adminLevel_${targetNickname}`) || 0;
+                message.tag = adminTags[level] ? adminTags[level] : "Гость";
+            }
         });
-    };
+        loadMessages();
+    }
 
-    document.getElementById('chatButton').addEventListener('click', function() {
-        const nickname = localStorage.getItem('nickname');
-        if (nickname) {
-            const chatUrl = `chat.html?nickname=${encodeURIComponent(nickname)}`;
-            window.location.href = chatUrl;
-        } else {
-            document.getElementById('nicknameModal').style.display = 'block';
-            document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('nicknameError').style.display = 'none';
-        }
-    });
-
-    document.getElementById('closeModal').addEventListener('click', function() {
-        document.getElementById('nicknameModal').style.display = 'none';
-    });
-
-    document.getElementById('saveNickname').addEventListener('click', function() {
-        let nicknameInput = document.getElementById('nicknameInput').value.trim();
-
-        // Замена ключа
-        if (nicknameInput.includes('KEY')) {
-            nicknameInput = nicknameInput.replace(/KEY/g, 'DreamFlap');
-        }
-
-        const errorMessage = document.getElementById('errorMessage');
-        const nicknameError = document.getElementById('nicknameError');
-
-        // Проверка на запрещенные ники
-        if (nicknameInput === 'DreamGirl') {
-            errorMessage.style.display = 'none';
-            nicknameError.style.display = 'block';
-        } else if (nicknameInput.length < 6) {
-            errorMessage.innerText = "Никнейм должен содержать минимум 6 символов.";
-            errorMessage.style.display = 'block';
-            nicknameError.style.display = 'none';
-        } else if (nicknameInput.length > 10) {
-            errorMessage.innerText = "Никнейм не должен превышать 10 символов.";
-            errorMessage.style.display = 'block';
-            nicknameError.style.display = 'none'; 
-        } else {
-            localStorage.setItem('nickname', nicknameInput);
-            document.getElementById('nicknameText').innerText = nicknameInput;
-            document.getElementById('nicknameDisplay').style.display = 'block';
-            document.getElementById('nicknameModal').style.display = 'none';
-            errorMessage.style.display = 'none'; 
-            nicknameError.style.display = 'none'; 
-
-            const chatUrl = `chat.html?nickname=${encodeURIComponent(nicknameInput)}`;
-            window.location.href = chatUrl;
-        }
-    });    
-
-    document.getElementById('nicknameDisplay').addEventListener('click', function() {
-        document.getElementById('resetModal').style.display = 'block';
-    });
-
-    document.getElementById('closeResetModal').addEventListener('click', function() {
-        document.getElementById('resetModal').style.display = 'none';
-    });
-
-    document.getElementById('confirmReset').addEventListener('click', function() {
-        localStorage.removeItem('nickname');
-        document.getElementById('nicknameDisplay').style.display = 'none';
-        document.getElementById('resetModal').style.display = 'none';
-    });
-
-    // Закрытие модального окна при нажатии вне его содержимого
-    window.onclick = function(event) {
-        const nicknameModal = document.getElementById('nicknameModal');
-        const resetModal = document.getElementById('resetModal');
-
-        if (event.target === nicknameModal) {
-            nicknameModal.style.display = "none";
-        }
-
-        if (event.target === resetModal) {
-            resetModal.style.display = "none";
-        }
-    };
+    setInterval(loadMessages, 10000);
 </script>
 
 </body>
