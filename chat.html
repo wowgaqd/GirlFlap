@@ -23,8 +23,8 @@
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 280px; /* Уменьшено для мобильных */
+            width: 95%; /* Увеличена ширина */
+            max-width: 350px; /* Увеличена максимальная ширина */
             height: 65%;
             display: flex;
             flex-direction: column;
@@ -450,17 +450,17 @@
     function previewVideo() {
         const file = videoInput.files[0];
         if (file) {
-            const videoDuration = URL.createObjectURL(file);
+            const fileURL = URL.createObjectURL(file);
             const videoElement = document.createElement('video');
-            videoElement.src = videoDuration;
+            videoElement.src = fileURL;
             videoElement.addEventListener('loadedmetadata', function() {
                 if (videoElement.duration > 15) {
                     alert("Длительность видео не должна превышать 15 секунд.");
                     videoInput.value = ""; // Сбрасываем ввод
-                } else {
-                    // Здесь можно добавить логику для обработки видео
-                }
+                } 
+                // Здесь можно добавить дополнительную логику для обработки видео
             });
+            videoElement.load(); // Загружаем видео
         }
     }
 
