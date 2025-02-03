@@ -25,10 +25,18 @@
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
             width: 95%; 
             max-width: 350px; 
-            height: 60%; /* Уменьшена высота */
+            height: 60%;
             display: flex;
             flex-direction: column;
             position: relative;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .menu.visible {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         .header {
@@ -49,16 +57,6 @@
             font-size: 14px;
         }
 
-        .nickname-admin {
-            font-size: 16px;
-            animation: shine 1s infinite alternate;
-        }
-
-        @keyframes shine {
-            0% {color: #ff69b4;}
-            100% {color: #ff4500;}
-        }
-
         .content {
             flex-grow: 1;
             overflow-y: auto;
@@ -69,22 +67,23 @@
             box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
         }
 
+        /* Custom Scrollbar Styles */
         .content::-webkit-scrollbar {
-            width: 10px;
+            width: 8px;
         }
 
         .content::-webkit-scrollbar-track {
-            background: rgba(80, 80, 80, 0.8);
-            border-radius: 8px;
+            background: rgba(50, 50, 50, 0.6);
+            border-radius: 10px;
         }
 
         .content::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 105, 180, 0.9);
-            border-radius: 8px;
+            background: #ff69b4;
+            border-radius: 10px;
         }
 
         .content::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 20, 147, 0.9);
+            background: #ff00ff;
         }
 
         .input-area {
@@ -147,8 +146,13 @@
             background: linear-gradient(135deg, #8B0000, #4B0000);
         }
 
+        .message.owner {
+            background: linear-gradient(135deg, #ff69b4, #ff007f);
+        }
+
         .admin-tag,
-        .guest-tag {
+        .guest-tag,
+        .owner-tag {
             border-radius: 7.5px;
             padding: 2px 5px;
             font-size: 10px;
@@ -157,19 +161,13 @@
         }
 
         .admin-tag {
-            background-color: rgba(255, 105, 180, 0.6);
+            background-color: rgba(255, 0, 0, 0.6);
             color: #ffffff;
-            box-shadow: 0 0 5px rgba(255, 105, 180, 0.6), 0 0 10px rgba(255, 20, 147, 0.6);
-            animation: glow 1.5s infinite alternate;
         }
 
-        @keyframes glow {
-            0% {
-                box-shadow: 0 0 5px rgba(255, 105, 180, 0.6), 0 0 10px rgba(255, 20, 147, 0.6);
-            }
-            100% {
-                box-shadow: 0 0 10px rgba(255, 105, 180, 0.8), 0 0 20px rgba(255, 20, 147, 0.8);
-            }
+        .owner-tag {
+            background-color: rgba(255, 105, 180, 0.6);
+            color: #ffffff;
         }
 
         .guest-tag {
@@ -259,7 +257,7 @@
 </head>
 <body>
 
-<div class="menu" id="menu" onclick="hideKeyboard()">
+<div class="menu" id="menu">
     <img src="https://i.postimg.cc/VdXdtdvR/user.png" alt="Аватарка" class="avatar" id="avatar">
     <div class="header">
         <h1>GirlFlap</h1>
@@ -282,7 +280,6 @@
     <img id="new-avatar-preview" src="https://i.postimg.cc/VdXdtdvR/user.png" alt="Новая Аватарка" style="margin-bottom: 5px;">
     <div class="user-tag" id="user-tag"></div>
     <input type="file" id="avatar-input" accept="image/*" style="display: none;">
-    <input type="file" id="video-input" accept="video/*" style="display: none;" disabled>
     <button id="close-modal-button" style="margin-top: 20px;">Закрыть</button>
 </div>
 
@@ -295,40 +292,28 @@
     const avatarModal = document.getElementById('avatar-modal');
     const modalOverlay = document.getElementById('modal-overlay');
     const avatarInput = document.getElementById('avatar-input');
-    const videoInput = document.getElementById('video-input');
     const newAvatarPreview = document.getElementById('new-avatar-preview');
     const closeModalButton = document.getElementById('close-modal-button');
     const userTagDisplay = document.getElementById('user-tag');
+    const menu = document.getElementById('menu');
 
-    const nickname = localStorage.getItem('nickname');
+    const nickname = localStorage.getItem('nickname') || 'GirlFlap';
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
-    const adminKey = "GirlAdmin-R5QRbNZsQSSgLRjqNGfK9";
+    const adminTags = ['Гость', 'Мл. Модер', 'Ст. Модер', 'Мл. Админ', 'Администратор', 'Ст. Админ', 'Владелец'];
 
-    userTagDisplay.innerHTML = `${nickname || 'GirlFlap'} <span class="${isAdmin ? 'admin-tag' : 'guest-tag'}">${isAdmin ? 'Администратор' : 'Гость'}</span>`;
-    nicknameDisplay.innerText = nickname ? nickname : 'Без имени';
+    userTagDisplay.innerHTML = `${nickname} <span class="${nickname === 'DreamGirl' ? 'owner-tag' : isAdmin ? 'admin-tag' : 'guest-tag'}">${nickname === 'DreamGirl' ? 'Владелец' : adminTags[isAdmin ? 2 : 0]}</span>`;
+    nicknameDisplay.innerText = nickname;
 
-    if (nickname) {
-        document.getElementById('nicknameDisplay').style.display = 'block';
-    } else {
-        document.getElementById('nicknameDisplay').style.display = 'none'; 
-    }
-
-    let userID = localStorage.getItem('userID');
-
-    if (userID === null) {
-        userID = Math.floor(Math.random() * 1001);
-        localStorage.setItem('userID', userID);
-    }
+    let userID = localStorage.getItem('userID') || Math.floor(Math.random() * 1001);
+    localStorage.setItem('userID', userID);
 
     loadMessages();
+    loadAvatar();
+    menu.classList.add('visible'); // Плавное открытие меню
 
     avatar.addEventListener('click', () => {
-        loadAvatar();
         modalOverlay.style.display = 'block';
         avatarModal.style.display = 'block';
-
-        avatarInput.disabled = false;
-        videoInput.disabled = !isAdmin;
     });
 
     newAvatarPreview.addEventListener('click', () => {
@@ -336,11 +321,15 @@
     });
 
     avatarInput.addEventListener('change', previewAvatar);
-    videoInput.addEventListener('change', previewVideo);
     closeModalButton.addEventListener('click', closeAvatarModal);
     modalOverlay.addEventListener('click', closeAvatarModal);
     
     sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
 
     function escapeHTML(html) {
         const div = document.createElement('div');
@@ -354,23 +343,15 @@
         const formattedDate = currentDate.toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' });
         const formattedTime = currentDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
-        if (messageText.startsWith('/clear ')) {
-            const inputKey = messageText.replace('/clear ', '').trim();
-            if (nickname === 'DreamGirl' && inputKey === adminKey) {
-                localStorage.removeItem('messages');
-                loadMessages();
-                messageInput.value = ''; 
-                return;
-            }
-        }
-
         if (messageText.startsWith('/setadmin ')) {
-            const inputKey = messageText.replace('/setadmin ', '').trim();
-            if (nickname === 'DreamGirl' && inputKey === adminKey) {
-                localStorage.setItem('isAdmin', true);
-                userTagDisplay.innerHTML = `${nickname} <span class="admin-tag">Администратор</span>`;
-            } else if (nickname === 'DreamGirl' && inputKey !== adminKey) {
-                alert("Неверный ключ администратора.");
+            const parts = messageText.split(' ');
+            if (parts.length === 3 && nickname === 'DreamGirl') {
+                const targetNickname = parts[1];
+                const newAdminLevel = Number(parts[2]);
+                if (newAdminLevel >= 1 && newAdminLevel <= 5) {
+                    localStorage.setItem(`adminLevel_${targetNickname}`, newAdminLevel);
+                    updateUserTag(targetNickname);
+                }
             }
             messageInput.value = '';
             return;
@@ -378,7 +359,7 @@
 
         if (messageText) {
             const message = {
-                username: `${nickname || 'GirlFlap'} [${userID}]`,
+                username: `${nickname} [${userID}]`,
                 text: escapeHTML(messageText),
                 date: formattedDate,
                 time: formattedTime,
@@ -405,12 +386,11 @@
 
     function displayMessage(message) {
         const msgElement = document.createElement('div');
-        msgElement.classList.add('message');
-        msgElement.classList.add(message.tag === "Администратор" ? 'admin' : 'guest');
+        msgElement.classList.add('message', message.tag === "Администратор" ? 'admin' : 'guest');
 
-        const tagElement = message.tag === "Администратор" 
-            ? '<span class="admin-tag">Администратор</span>' 
-            : '<span class="guest-tag">Гость</span>';
+        const tagElement = (nickname === 'DreamGirl') 
+            ? '<span class="owner-tag">Владелец</span>' 
+            : `<span class="${isAdmin ? 'admin-tag' : 'guest-tag'}">${adminTags[isAdmin ? 2 : 0]}</span>`;
 
         msgElement.innerHTML = `
             <b>${message.username}${tagElement}</b>
@@ -434,48 +414,29 @@
             reader.onload = function(event) {
                 newAvatarPreview.src = event.target.result;
                 avatar.src = event.target.result; 
-                localStorage.setItem('avatar', event.target.result); 
+                localStorage.setItem('avatar', event.target.result);
             }
             reader.readAsDataURL(file);
         }
     }
 
-    function previewVideo() {
-        const file = videoInput.files[0];
-        if (file) {
-            const fileURL = URL.createObjectURL(file);
-            const videoElement = document.createElement('video');
-            videoElement.src = fileURL;
-            videoElement.addEventListener('loadedmetadata', function() {
-                if (videoElement.duration > 15) {
-                    avatar.src = 'https://i.postimg.cc/L6hZ6JPd/free-icon-no-video-1661952.png'; // Заменяем аватар на иконку
-                    videoInput.value = ""; // Сбрасываем ввод
-                } else {
-                    const videoPreview = document.createElement('video');
-                    videoPreview.src = fileURL;
-                    videoPreview.controls = true;
-                    videoPreview.width = 70; // Устанавливаем ширину миниатюры видео
-                    newAvatarPreview.src = fileURL; // Устанавливаем превью видео, если меньше 15 секунд
-                    newAvatarPreview.replaceWith(videoPreview);
-                }
-            });
-            videoElement.load(); 
-        }
-    }
-
     function loadAvatar() {
-        const savedAvatar = localStorage.getItem('avatar');
-        if (savedAvatar) {
-            avatar.src = savedAvatar;
-            newAvatarPreview.src = savedAvatar;
-        }
+        const savedAvatar = localStorage.getItem('avatar') || 'https://i.postimg.cc/VdXdtdvR/user.png';
+        avatar.src = savedAvatar;
+        newAvatarPreview.src = savedAvatar;
     }
 
-    function hideKeyboard() {
-        messageInput.blur(); // Скрываем клавиатуру
+    function updateUserTag(targetNickname) {
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messages.forEach((message) => {
+            if (message.username.includes(targetNickname)) {
+                const level = localStorage.getItem(`adminLevel_${targetNickname}`) || 0;
+                message.tag = adminTags[level] ? adminTags[level] : "Гость";
+            }
+        });
+        loadMessages();
     }
 
-    loadAvatar(); 
     setInterval(loadMessages, 10000);
 </script>
 
