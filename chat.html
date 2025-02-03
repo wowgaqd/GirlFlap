@@ -23,9 +23,9 @@
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
-            width: 95%; /* Увеличена ширина */
-            max-width: 350px; /* Увеличена максимальная ширина */
-            height: 65%;
+            width: 95%; 
+            max-width: 350px; 
+            height: 60%; /* Уменьшена высота */
             display: flex;
             flex-direction: column;
             position: relative;
@@ -153,7 +153,7 @@
             padding: 2px 5px;
             font-size: 10px;
             margin-left: 5px;
-            opacity: 0.9; /* Прозрачность тегов изменена */
+            opacity: 0.9;
         }
 
         .admin-tag {
@@ -193,7 +193,7 @@
             font-size: 9px;
             color: #bbb;
             margin-top: 4px;
-            user-select: none; /* Запрет выделения */
+            user-select: none;
         }
 
         .message .reply-button {
@@ -204,7 +204,7 @@
             bottom: 8px;
             right: 8px;
             font-weight: bold;
-            user-select: none; /* Запрет выделения */
+            user-select: none;
         }
 
         .avatar {
@@ -227,12 +227,12 @@
             transform: translate(-50%, -50%);
             background-color: rgba(30, 30, 30, 0.9);
             border-radius: 10px;
-            padding: 10px; /* уменьшено для мобильных */
+            padding: 10px; 
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             z-index: 1000;
             text-align: center;
-            width: 80%; /* уменьшено для мобильных */
-            max-width: 300px; /* максимальная ширина */
+            width: 80%; 
+            max-width: 300px; 
         }
 
         .avatar-modal img {
@@ -242,7 +242,7 @@
             object-fit: cover;
             margin: 0 auto; 
             display: block; 
-            cursor: pointer; /* Указатель курсора при наведении */
+            cursor: pointer; 
         }        
 
         .modal-overlay {
@@ -259,7 +259,7 @@
 </head>
 <body>
 
-<div class="menu" id="menu">
+<div class="menu" id="menu" onclick="hideKeyboard()">
     <img src="https://i.postimg.cc/VdXdtdvR/user.png" alt="Аватарка" class="avatar" id="avatar">
     <div class="header">
         <h1>GirlFlap</h1>
@@ -322,24 +322,17 @@
 
     loadMessages();
 
-    // Открытие модального окна при клике на аватар
     avatar.addEventListener('click', () => {
-        loadAvatar(); // Загружаем текущее изображение
+        loadAvatar();
         modalOverlay.style.display = 'block';
         avatarModal.style.display = 'block';
 
-        // Доступ к выбору файлов
         avatarInput.disabled = false;
-        if (isAdmin) {
-            videoInput.disabled = false;
-        } else {
-            videoInput.disabled = true;
-        }
+        videoInput.disabled = !isAdmin;
     });
 
-    // Открытие выбора фото при клике на аватарку в модальном окне
     newAvatarPreview.addEventListener('click', () => {
-        avatarInput.click(); // Открываем диалог выбора файла
+        avatarInput.click();
     });
 
     avatarInput.addEventListener('change', previewAvatar);
@@ -440,8 +433,8 @@
             const reader = new FileReader();
             reader.onload = function(event) {
                 newAvatarPreview.src = event.target.result;
-                avatar.src = event.target.result; // Обновляем аватар на главном экране
-                localStorage.setItem('avatar', event.target.result); // Сохраняем новое изображение
+                avatar.src = event.target.result; 
+                localStorage.setItem('avatar', event.target.result); 
             }
             reader.readAsDataURL(file);
         }
@@ -455,12 +448,18 @@
             videoElement.src = fileURL;
             videoElement.addEventListener('loadedmetadata', function() {
                 if (videoElement.duration > 15) {
-                    alert("Длительность видео не должна превышать 15 секунд.");
+                    avatar.src = 'https://i.postimg.cc/L6hZ6JPd/free-icon-no-video-1661952.png'; // Заменяем аватар на иконку
                     videoInput.value = ""; // Сбрасываем ввод
-                } 
-                // Здесь можно добавить дополнительную логику для обработки видео
+                } else {
+                    const videoPreview = document.createElement('video');
+                    videoPreview.src = fileURL;
+                    videoPreview.controls = true;
+                    videoPreview.width = 70; // Устанавливаем ширину миниатюры видео
+                    newAvatarPreview.src = fileURL; // Устанавливаем превью видео, если меньше 15 секунд
+                    newAvatarPreview.replaceWith(videoPreview);
+                }
             });
-            videoElement.load(); // Загружаем видео
+            videoElement.load(); 
         }
     }
 
@@ -472,8 +471,11 @@
         }
     }
 
-    loadAvatar(); 
+    function hideKeyboard() {
+        messageInput.blur(); // Скрываем клавиатуру
+    }
 
+    loadAvatar(); 
     setInterval(loadMessages, 10000);
 </script>
 
