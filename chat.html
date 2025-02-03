@@ -440,8 +440,8 @@
             const reader = new FileReader();
             reader.onload = function(event) {
                 newAvatarPreview.src = event.target.result;
-                avatar.src = event.target.result; // Установите новую аватарку сразу
-                localStorage.setItem('avatar', event.target.result); // Сохранение новой аватарки
+                avatar.src = event.target.result; // Обновляем аватар на главном экране
+                localStorage.setItem('avatar', event.target.result); // Сохраняем новое изображение
             }
             reader.readAsDataURL(file);
         }
