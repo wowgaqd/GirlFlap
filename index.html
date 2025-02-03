@@ -194,15 +194,15 @@
         .snowflake:nth-child(10) { width: 4px; height: 4px; left: 90%; animation-duration: 8s; }
 
         @media (max-width: 600px) {
-            header h1 { font-size: 1.5em; }
+            header h1 { font-size: 1.3em; }
             .top-buttons { flex-direction: row; margin: 10px; }
-            .bot-card h3 { font-size: 1.2em; }
+            .bot-card h3 { font-size: 1.1em; }
             .btn { font-size: 0.9em; }
             .top-button img { width: 80px; }
             #nicknameDisplay {
-                font-size: 0.9em;
+                font-size: 0.8em; 
                 padding: 5px;
-                background-color: rgba(30, 30, 30, 0.9);
+                background-color: rgba(30, 30, 30, 0.8); 
             }
         }
 
@@ -380,7 +380,6 @@
         loader.style.display = 'none';
 
         const nickname = localStorage.getItem('nickname');
-        const isAdminNicknameUsed = localStorage.getItem('isAdminNicknameUsed') === 'true';
         if (nickname) {
             document.getElementById('nicknameText').innerText = nickname;
             document.getElementById('nicknameDisplay').style.display = 'block';
@@ -422,15 +421,13 @@
 
         // Замена ключа
         if (nicknameInput.includes('KEY')) {
-            nicknameInput = nicknameInput.replace(/KEY/g, 'GirlFlap');
+            nicknameInput = nicknameInput.replace(/KEY/g, 'DreamFlap');
         }
 
         const errorMessage = document.getElementById('errorMessage');
         const nicknameError = document.getElementById('nicknameError');
 
-        // Проверка на разрешенные ники
-        const isAdminNicknameUsed = localStorage.getItem('isAdminNicknameUsed') === 'true';
-
+        // Проверка на запрещенные ники
         if (nicknameInput === 'DreamGirl') {
             errorMessage.style.display = 'none';
             nicknameError.style.display = 'block';
@@ -442,9 +439,6 @@
             errorMessage.innerText = "Никнейм не должен превышать 10 символов.";
             errorMessage.style.display = 'block';
             nicknameError.style.display = 'none'; 
-        } else if (isAdminNicknameUsed && localStorage.getItem('nickname') === nicknameInput) {
-            errorMessage.style.display = 'none';
-            nicknameError.style.display = 'block'; 
         } else {
             localStorage.setItem('nickname', nicknameInput);
             document.getElementById('nicknameText').innerText = nicknameInput;
@@ -468,7 +462,6 @@
 
     document.getElementById('confirmReset').addEventListener('click', function() {
         localStorage.removeItem('nickname');
-        localStorage.removeItem('isAdminNicknameUsed');
         document.getElementById('nicknameDisplay').style.display = 'none';
         document.getElementById('resetModal').style.display = 'none';
     });
