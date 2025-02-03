@@ -450,12 +450,17 @@
     function previewVideo() {
         const file = videoInput.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                // Здесь можно добавить логику для обработки видео
-                alert("Видео загружено. Имя файла: " + file.name);
-            }
-            reader.readAsDataURL(file);
+            const videoDuration = URL.createObjectURL(file);
+            const videoElement = document.createElement('video');
+            videoElement.src = videoDuration;
+            videoElement.addEventListener('loadedmetadata', function() {
+                if (videoElement.duration > 15) {
+                    alert("Длительность видео не должна превышать 15 секунд.");
+                    videoInput.value = ""; // Сбрасываем ввод
+                } else {
+                    // Здесь можно добавить логику для обработки видео
+                }
+            });
         }
     }
 
